@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans antialiased;
+  }
+  
+  /* Custom color utilities for agricultural theme */
+  .bg-agri-primary {
+    background: linear-gradient(135deg, #7cb342 0%, #8bc34a 100%);
+  }
+  
+  .text-agri-primary {
+    color: #7cb342;
+  }
+  
+  .border-agri-primary {
+    border-color: #7cb342;
+  }
+  
+  .bg-agri-secondary {
+    background: linear-gradient(135deg, #e45a16 0%, #f37320 100%);
+  }
+  
+  .text-agri-secondary {
+    color: #e45a16;
+  }
+  
+  .bg-agri-accent {
+    background: linear-gradient(135deg, #ca8a04 0%, #eab308 100%);
+  }
+}

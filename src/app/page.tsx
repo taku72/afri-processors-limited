@@ -1,0 +1,286 @@
+import Link from 'next/link'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
+import { ArrowRight, CheckCircle, Users, Award, Truck, Globe } from 'lucide-react'
+
+export default function Home() {
+  return (
+    <div className="min-h-screen">
+      <Header />
+      
+      {/* Hero Section */}
+      <section className="bg-gradient-to-r from-primary-600 to-primary-800 text-white bg-agri-primary">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+              Nourishing the Nation
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 text-primary-100">
+              Afri Processors Limited's Journey of Excellence Since 1990
+            </p>
+            <div className="space-x-4">
+              <Link 
+                href="/catalog" 
+                className="inline-flex items-center bg-white text-primary-700 px-8 py-3 rounded-lg font-semibold hover:bg-primary-50 transition-colors"
+              >
+                Explore Products
+                <ArrowRight className="ml-2" size={20} />
+              </Link>
+              <Link 
+                href="/contact" 
+                className="inline-flex items-center border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-primary-700 transition-colors"
+              >
+                Contact Us
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Statistics Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+              <div className="text-4xl md:text-5xl font-bold text-primary-700 mb-2">35+</div>
+              <div className="text-gray-600 font-medium">Years Experience</div>
+            </div>
+            <div>
+              <div className="text-4xl md:text-5xl font-bold text-primary-700 mb-2">250+</div>
+              <div className="text-gray-600 font-medium">Retail Outlets</div>
+            </div>
+            <div>
+              <div className="text-4xl md:text-5xl font-bold text-primary-700 mb-2">15</div>
+              <div className="text-gray-600 font-medium">Branch Offices</div>
+            </div>
+            <div>
+              <div className="text-4xl md:text-5xl font-bold text-primary-700 mb-2">50+</div>
+              <div className="text-gray-600 font-medium">Product Lines</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Why Choose Afri Processors?
+            </h2>
+            <p className="text-xl text-gray-600">
+              We deliver excellence in agricultural processing
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+              <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Award className="text-primary-600" size={32} />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Quality Assurance</h3>
+              <p className="text-gray-600">
+                International standards and quality control at every step of processing
+              </p>
+            </div>
+            
+            <div className="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+              <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Truck className="text-primary-600" size={32} />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Reliable Delivery</h3>
+              <p className="text-gray-600">
+                Timely and efficient delivery across Nigeria and beyond
+              </p>
+            </div>
+            
+            <div className="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+              <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Globe className="text-primary-600" size={32} />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Sustainable Practices</h3>
+              <p className="text-gray-600">
+                Environmentally friendly processing methods for a better future
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Founder's Message Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+                Founder's Message
+              </h2>
+              <div className="mb-4">
+                <h3 className="text-xl font-semibold text-primary-600 mb-2">CHIEF ADEKUNLE AFOLABI – Founder</h3>
+                <p className="text-gray-600 italic">Born in 1955, Chief Afolabi established Afri Processors Ltd in 1990 with a vision to transform agricultural processing in Africa.</p>
+              </div>
+              <p className="text-gray-700 mb-4">
+                In the late 1980s, I recognized the immense potential in Nigeria's agricultural sector. Despite the challenges, I saw an opportunity to create a company that would not only process high-quality agricultural products but also empower local farmers and contribute to food security in our nation.
+              </p>
+              <p className="text-gray-700 mb-6">
+                What started as a small milling operation with just 12 employees has grown into a comprehensive food processing company employing over 1,200 people across Nigeria. Our commitment to quality, innovation, and sustainable practices has been the cornerstone of our success.
+              </p>
+              <Link 
+                href="/about" 
+                className="inline-flex items-center text-primary-600 font-semibold hover:text-primary-700"
+              >
+                Read More About Our Story
+                <ArrowRight className="ml-2" size={20} />
+              </Link>
+            </div>
+            <div className="bg-gray-200 rounded-lg h-96 flex items-center justify-center">
+              <div className="text-center text-gray-500">
+                <Users className="mx-auto mb-4" size={64} />
+                <p>Founder's Image</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Company History Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Something About Afri History
+            </h2>
+          </div>
+          <div className="max-w-4xl mx-auto">
+            <p className="text-lg text-gray-700 mb-6 text-center">
+              Afri Processors Limited was founded in 1990 by Chief Afolabi, whose business activities in Nigeria date back over four decades. From a small flour milling company, Afri Processors has over the years grown into a major force in the agro-processing industry in Nigeria and has gained an enviable international reputation in this area of business.
+            </p>
+            <p className="text-lg text-gray-700 text-center">
+              The company has a proud heritage of product innovation and commitment to delivery. Our strength lies in our adaptability, giving rise to an unrivalled turnkey operations platform which actively supports the progress of our agricultural economy.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Product Portfolio Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Our Products Portfolio
+            </h2>
+            <p className="text-xl text-gray-600 mb-8">
+              Explore Our Top Brands
+            </p>
+            <Link 
+              href="/catalog" 
+              className="inline-flex items-center bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
+            >
+              Explore All Products
+              <ArrowRight className="ml-2" size={20} />
+            </Link>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {[
+              'Premium Flour',
+              'Golden Rice',
+              'Afri Oil',
+              'Maize Meal',
+              'Peanut Butter',
+              'Instant Milk',
+              'Food Supplement',
+              'Bread Spread',
+              'Fruit Juice',
+              'Protein Powder',
+              'Cereal Mix',
+              'Baking Flour'
+            ].map((product, index) => (
+              <div key={index} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-4">
+                <div className="bg-gray-200 h-32 rounded-lg mb-4 flex items-center justify-center">
+                  <div className="text-gray-400 text-sm text-center">{product}</div>
+                </div>
+                <h3 className="font-semibold text-gray-900 text-center">{product}</h3>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Our Services
+            </h2>
+            <p className="text-xl text-gray-600">
+              Comprehensive agricultural processing solutions
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="flex items-start space-x-4">
+              <CheckCircle className="text-primary-600 mt-1 flex-shrink-0" size={24} />
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Grain Processing</h3>
+                <p className="text-gray-600">
+                  Professional processing of various grains including rice, maize, wheat, and more
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex items-start space-x-4">
+              <CheckCircle className="text-primary-600 mt-1 flex-shrink-0" size={24} />
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Oil Extraction</h3>
+                <p className="text-gray-600">
+                  Advanced oil extraction from seeds and nuts with high efficiency
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex items-start space-x-4">
+              <CheckCircle className="text-primary-600 mt-1 flex-shrink-0" size={24} />
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Packaging Solutions</h3>
+                <p className="text-gray-600">
+                  Modern packaging facilities to preserve product quality and extend shelf life
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex items-start space-x-4">
+              <CheckCircle className="text-primary-600 mt-1 flex-shrink-0" size={24} />
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Quality Testing</h3>
+                <p className="text-gray-600">
+                  Comprehensive quality testing and certification services
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="bg-primary-600 text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            Ready to Work With Us?
+          </h2>
+          <p className="text-xl mb-8 text-primary-100">
+            Join hundreds of satisfied customers who trust Afri Processors
+          </p>
+          <Link 
+            href="/contact" 
+            className="inline-flex items-center bg-white text-primary-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+          >
+            Get Started
+            <ArrowRight className="ml-2" size={20} />
+          </Link>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+  )
+}
