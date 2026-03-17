@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Afri Processors Website
 
 A modern, responsive Next.js website for Afri Processors - a leading agricultural processing company in Africa.
@@ -138,3 +139,6 @@ This website can be deployed to various platforms including:
 ## License
 
 This project is proprietary and belongs to Afri Processors.
+=======
+# afri-processors-limited
+>>>>>>> f0caca9ed3e5a06bafe0b75739bb4911745d1059

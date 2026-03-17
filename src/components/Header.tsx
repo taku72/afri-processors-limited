@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { Menu, X } from 'lucide-react'
+import Image from 'next/image'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -11,14 +12,21 @@ export default function Header() {
     <header className="bg-white shadow-lg border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          {/* Logo - Simple text version */}
+          {/* Logo - Using actual image */}
           <Link href="/" className="flex items-center">
             <div className="flex items-center">
-              <div className="h-10 w-10 flex items-center justify-center rounded-full bg-primary-600">
-                <span className="text-white font-bold text-lg">AP</span>
+              <div className="relative">
+                <Image 
+                  src="/images/lago.png" 
+                  alt="Afri Processors Logo" 
+                  width={60} 
+                  height={60} 
+                  className="object-contain rounded-lg"
+                  priority
+                />
               </div>
               <div className="ml-3">
-                <h1 className="text-2xl font-bold text-primary-700 leading-tight">
+                <h1 className="text-2xl font-bold text-green-700 leading-tight">
                   Afri Processors
                 </h1>
                 <p className="text-xs text-gray-600 leading-tight">
