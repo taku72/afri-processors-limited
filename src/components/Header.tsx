@@ -39,40 +39,40 @@ export default function Header() {
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
             <Link 
-              href="/" 
-              className="text-gray-700 hover:text-primary-700 transition-colors font-medium"
+              href="/"
+              className="text-gray-700 hover:text-green-600 transition-colors font-medium"
             >
               Home
             </Link>
             <Link 
               href="/about" 
-              className="text-gray-700 hover:text-primary-700 transition-colors font-medium"
+              className="text-gray-700 hover:text-green-600 transition-colors font-medium"
             >
               About Us
             </Link>
             <Link 
-              href="/shop" 
-              className="text-gray-700 hover:text-primary-700 transition-colors font-medium"
+              href="/catalog"
+              className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
             >
-              Shop
+              Catalog
             </Link>
             <Link 
-              href="/catalog" 
-              className="text-gray-700 hover:text-primary-700 transition-colors font-medium"
+              href="/news"
+              className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
             >
-              Product Catalog
+              News
             </Link>
             <Link 
-              href="/contact" 
-              className="text-gray-700 hover:text-primary-700 transition-colors font-medium"
+              href="/contact"
+              className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
             >
               Contact
             </Link>
             <Link 
-              href="/news" 
-              className="text-gray-700 hover:text-primary-700 transition-colors font-medium"
+              href="/admin/login"
+              className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
             >
-              News
+              Admin
             </Link>
           </div>
 
@@ -80,58 +80,58 @@ export default function Header() {
           <div className="lg:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-700 hover:text-primary-700 focus:outline-none p-2"
+              className="text-gray-700 hover:text-green-600 focus:outline-none p-2"
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile menu */}
         {isMenuOpen && (
-          <div className="lg:hidden bg-white border-t border-gray-100">
-            <div className="px-4 py-2 space-y-1">
-              <Link 
-                href="/" 
-                className="block px-3 py-2 text-gray-700 hover:text-primary-700 hover:bg-primary-50 rounded-md font-medium"
+          <div className="lg:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+              <Link
+                href="/"
+                className="text-gray-700 hover:text-green-600 block px-3 py-2 rounded-md text-base font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Home
               </Link>
-              <Link 
-                href="/about" 
-                className="block px-3 py-2 text-gray-700 hover:text-primary-700 hover:bg-primary-50 rounded-md font-medium"
+              <Link
+                href="/about"
+                className="text-gray-700 hover:text-green-600 block px-3 py-2 rounded-md text-base font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
                 About Us
               </Link>
-              <Link 
-                href="/shop" 
-                className="block px-3 py-2 text-gray-700 hover:text-primary-700 hover:bg-primary-50 rounded-md font-medium"
+              <Link
+                href="/catalog"
+                className="text-gray-700 hover:text-green-600 block px-3 py-2 rounded-md text-base font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Shop
+                Catalog
               </Link>
-              <Link 
-                href="/catalog" 
-                className="block px-3 py-2 text-gray-700 hover:text-primary-700 hover:bg-primary-50 rounded-md font-medium"
+              <Link
+                href="/news"
+                className="text-gray-700 hover:text-green-600 block px-3 py-2 rounded-md text-base font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Product Catalog
+                News
               </Link>
-              <Link 
-                href="/contact" 
-                className="block px-3 py-2 text-gray-700 hover:text-primary-700 hover:bg-primary-50 rounded-md font-medium"
+              <Link
+                href="/contact"
+                className="text-gray-700 hover:text-green-600 block px-3 py-2 rounded-md text-base font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Contact
               </Link>
-              <Link 
-                href="/news" 
-                className="block px-3 py-2 text-gray-700 hover:text-primary-700 hover:bg-primary-50 rounded-md font-medium"
+              <Link
+                href="/admin/login"
+                className="bg-green-600 text-white block px-3 py-2 rounded-md text-base font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
-                News
+                Admin
               </Link>
             </div>
           </div>
