@@ -17,22 +17,22 @@ export default function Header() {
             <div className="flex items-center">
               <div className="relative">
                 <Image 
-                  src="/images/lago.png" 
+                  src="/images/logo1.png" 
                   alt="Afri Processors Logo" 
-                  width={60} 
-                  height={60} 
+                  width={300} 
+                  height={100} 
                   className="object-contain rounded-lg"
                   priority
                 />
               </div>
-              <div className="ml-3">
+              {/* <div className="ml-3">
                 <h1 className="text-2xl font-bold text-green-700 leading-tight">
                   Afri Processors
                 </h1>
                 <p className="text-xs text-gray-600 leading-tight">
                   Quality Agricultural Processing
                 </p>
-              </div>
+              </div> */}
             </div>
           </Link>
 
