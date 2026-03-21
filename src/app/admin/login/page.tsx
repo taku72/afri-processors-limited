@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { login } from '@/lib/auth'
 import { Eye, EyeOff, Shield, Lock, Mail } from 'lucide-react'
 
 export default function AdminLogin() {
@@ -25,17 +24,34 @@ export default function AdminLogin() {
     if (error) setError('')
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError('')
 
-    const result = login(formData.username, formData.password)
+    // Simple credential check
+    const validCredentials = [
+      { username: 'admin', password: 'admin123' },
+      { username: 'superadmin', password: 'admin123' }
+    ]
 
-    if (result.success) {
+    const isValid = validCredentials.some(
+      cred => cred.username === formData.username && cred.password === formData.password
+    )
+
+    if (isValid) {
+      // Store simple session data
+      const userData = {
+        username: formData.username,
+        role: formData.username === 'superadmin' ? 'super_admin' : 'admin',
+        full_name: formData.username === 'superadmin' ? 'Super Administrator' : 'Administrator',
+        loginTime: new Date().toISOString()
+      }
+      
+      localStorage.setItem('adminSession', JSON.stringify(userData))
       router.push('/admin')
     } else {
-      setError(result.error || 'Login failed')
+      setError('Invalid username or password')
     }
 
     setIsLoading(false)
