@@ -14,7 +14,10 @@ import {
   Edit,
   Trash2,
   UserPlus,
-  Download
+  Download,
+  X,
+  Eye,
+  EyeOff
 } from 'lucide-react'
 
 interface User {
@@ -29,6 +32,16 @@ interface User {
   status: 'active' | 'inactive' | 'suspended'
 }
 
+interface NewUser {
+  username: string
+  full_name: string
+  email: string
+  phone: string
+  role: string
+  password: string
+  confirmPassword: string
+}
+
 export default function UsersPage() {
   const router = useRouter()
   const [user, setUser] = useState<any>(null)
@@ -37,6 +50,19 @@ export default function UsersPage() {
   const [filterRole, setFilterRole] = useState('all')
   const [filterStatus, setFilterStatus] = useState('all')
   const [isLoading, setIsLoading] = useState(true)
+  const [showAddUserModal, setShowAddUserModal] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [newUser, setNewUser] = useState<NewUser>({
+    username: '',
+    full_name: '',
+    email: '',
+    phone: '',
+    role: 'admin',
+    password: '',
+    confirmPassword: ''
+  })
+  const [errors, setErrors] = useState<Partial<NewUser>>({})
 
   useEffect(() => {
     // Check session
@@ -111,6 +137,86 @@ export default function UsersPage() {
     setUsers(mockUsers)
     setIsLoading(false)
   }, [router])
+
+  const validateForm = () => {
+    const newErrors: Partial<NewUser> = {}
+
+    if (!newUser.username.trim()) {
+      newErrors.username = 'Username is required'
+    } else if (newUser.username.length < 3) {
+      newErrors.username = 'Username must be at least 3 characters'
+    }
+
+    if (!newUser.full_name.trim()) {
+      newErrors.full_name = 'Full name is required'
+    }
+
+    if (!newUser.email.trim()) {
+      newErrors.email = 'Email is required'
+    } else if (!/\S+@\S+\.\S+/.test(newUser.email)) {
+      newErrors.email = 'Email is invalid'
+    }
+
+    if (!newUser.role) {
+      newErrors.role = 'Role is required'
+    }
+
+    if (!newUser.password) {
+      newErrors.password = 'Password is required'
+    } else if (newUser.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters'
+    }
+
+    if (!newUser.confirmPassword) {
+      newErrors.confirmPassword = 'Please confirm password'
+    } else if (newUser.password !== newUser.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match'
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleAddUser = () => {
+    if (!validateForm()) return
+
+    // Create new user object
+    const userToAdd: User = {
+      id: users.length + 1,
+      username: newUser.username,
+      full_name: newUser.full_name,
+      email: newUser.email,
+      phone: newUser.phone || undefined,
+      role: newUser.role,
+      created_at: new Date().toISOString(),
+      last_login: undefined,
+      status: 'active'
+    }
+
+    // Add user to the list
+    setUsers([...users, userToAdd])
+
+    // Reset form and close modal
+    setNewUser({
+      username: '',
+      full_name: '',
+      email: '',
+      phone: '',
+      role: 'admin',
+      password: '',
+      confirmPassword: ''
+    })
+    setErrors({})
+    setShowAddUserModal(false)
+  }
+
+  const handleInputChange = (field: keyof NewUser, value: string) => {
+    setNewUser(prev => ({ ...prev, [field]: value }))
+    // Clear error for this field when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: undefined }))
+    }
+  }
 
   // Filter users based on search and filters
   const filteredUsers = users.filter(user => {
@@ -192,7 +298,10 @@ export default function UsersPage() {
             <Download className="w-4 h-4 mr-2" />
             Export
           </button>
-          <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700">
+          <button 
+            onClick={() => setShowAddUserModal(true)}
+            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
+          >
             <UserPlus className="w-4 h-4 mr-2" />
             Add User
           </button>
@@ -411,6 +520,221 @@ export default function UsersPage() {
           </table>
         </div>
       </div>
+
+      {/* Add User Modal */}
+      {showAddUserModal && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-gray-900">Add New User</h3>
+              <button
+                onClick={() => {
+                  setShowAddUserModal(false)
+                  setErrors({})
+                  setNewUser({
+                    username: '',
+                    full_name: '',
+                    email: '',
+                    phone: '',
+                    role: 'admin',
+                    password: '',
+                    confirmPassword: ''
+                  })
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {/* Username */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Username *
+                </label>
+                <input
+                  type="text"
+                  value={newUser.username}
+                  onChange={(e) => handleInputChange('username', e.target.value)}
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                    errors.username ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder="Enter username"
+                />
+                {errors.username && (
+                  <p className="mt-1 text-sm text-red-600">{errors.username}</p>
+                )}
+              </div>
+
+              {/* Full Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  value={newUser.full_name}
+                  onChange={(e) => handleInputChange('full_name', e.target.value)}
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                    errors.full_name ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder="Enter full name"
+                />
+                {errors.full_name && (
+                  <p className="mt-1 text-sm text-red-600">{errors.full_name}</p>
+                )}
+              </div>
+
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  value={newUser.email}
+                  onChange={(e) => handleInputChange('email', e.target.value)}
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                    errors.email ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder="Enter email address"
+                />
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                )}
+              </div>
+
+              {/* Phone */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone
+                </label>
+                <input
+                  type="tel"
+                  value={newUser.phone}
+                  onChange={(e) => handleInputChange('phone', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Enter phone number"
+                />
+              </div>
+
+              {/* Role */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Role *
+                </label>
+                <select
+                  value={newUser.role}
+                  onChange={(e) => handleInputChange('role', e.target.value)}
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                    errors.role ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                >
+                  <option value="">Select a role</option>
+                  <option value="admin">Admin</option>
+                  <option value="super_admin">Super Admin</option>
+                </select>
+                {errors.role && (
+                  <p className="mt-1 text-sm text-red-600">{errors.role}</p>
+                )}
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Password *
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={newUser.password}
+                    onChange={(e) => handleInputChange('password', e.target.value)}
+                    className={`w-full px-3 py-2 pr-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                      errors.password ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    placeholder="Enter password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4 text-gray-400" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-gray-400" />
+                    )}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                )}
+              </div>
+
+              {/* Confirm Password */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Confirm Password *
+                </label>
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    value={newUser.confirmPassword}
+                    onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                    className={`w-full px-3 py-2 pr-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                      errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    placeholder="Confirm password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-4 w-4 text-gray-400" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-gray-400" />
+                    )}
+                  </button>
+                </div>
+                {errors.confirmPassword && (
+                  <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="flex justify-end space-x-3 mt-6">
+              <button
+                onClick={() => {
+                  setShowAddUserModal(false)
+                  setErrors({})
+                  setNewUser({
+                    username: '',
+                    full_name: '',
+                    email: '',
+                    phone: '',
+                    role: 'admin',
+                    password: '',
+                    confirmPassword: ''
+                  })
+                }}
+                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddUser}
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
+              >
+                Add User
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
