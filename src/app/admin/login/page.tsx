@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Eye, EyeOff, Shield, Lock, Mail } from 'lucide-react'
 
 export default function AdminLogin() {
@@ -62,8 +63,27 @@ export default function AdminLogin() {
       <div className="max-w-md w-full">
         {/* Logo/Brand */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-green-600 rounded-full mb-4">
-            <Shield className="text-white" size={32} />
+          <div className="inline-flex items-center justify-center mb-4">
+            <div className="relative">
+              <Image 
+                src="/images/logo1.png" 
+                alt="Afri Processors Logo" 
+                width={300} 
+                height={100} 
+                className="object-contain rounded-lg"
+                priority
+                onError={(e) => {
+                  // Fallback to Shield icon if image fails to load
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  const fallback = target.nextElementSibling as HTMLElement;
+                  if (fallback) fallback.style.display = 'flex';
+                }}
+              />
+              <div className="hidden items-center justify-center w-16 h-16 bg-green-600 rounded-full">
+                <Shield className="text-white" size={32} />
+              </div>
+            </div>
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Admin Portal</h1>
           <p className="text-gray-600 mt-2">Afri Processors Management System</p>
