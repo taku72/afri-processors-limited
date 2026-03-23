@@ -14,7 +14,6 @@ import {
   Edit,
   Trash2,
   UserPlus,
-  Download,
   X,
   Eye,
   EyeOff
@@ -346,11 +345,7 @@ export default function UsersPage() {
             Manage admin users and their permissions
           </p>
         </div>
-        <div className="mt-4 sm:mt-0 flex space-x-3">
-          <button className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-            <Download className="w-4 h-4 mr-2" />
-            Export
-          </button>
+        <div className="mt-4 sm:mt-0">
           <button 
             onClick={() => setShowAddUserModal(true)}
             className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
