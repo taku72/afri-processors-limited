@@ -68,12 +68,6 @@ export default function Header() {
             >
               Contact
             </Link>
-            <Link 
-              href="/admin/login"
-              className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
-            >
-              Admin
-            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -125,13 +119,6 @@ export default function Header() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Contact
-              </Link>
-              <Link
-                href="/admin/login"
-                className="bg-green-600 text-white block px-3 py-2 rounded-md text-base font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Admin
               </Link>
             </div>
           </div>
