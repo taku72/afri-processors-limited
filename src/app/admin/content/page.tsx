@@ -787,6 +787,165 @@ export default function ContentPage() {
           </div>
         </div>
       )}
+
+      {/* Edit Content Modal */}
+      {showEditModal && editingContent && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-10 mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-medium text-gray-900">Edit Content</h3>
+              <button
+                onClick={() => {
+                  setShowEditModal(false)
+                  setEditingContent(null)
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              {/* Title and Type */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Title *
+                  </label>
+                  <input
+                    type="text"
+                    value={editingContent.title}
+                    onChange={(e) => setEditingContent({...editingContent, title: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Enter content title"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Content Type *
+                  </label>
+                  <select
+                    value={editingContent.type}
+                    onChange={(e) => setEditingContent({...editingContent, type: e.target.value as 'page' | 'post' | 'article'})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  >
+                    <option value="page">Page</option>
+                    <option value="post">Post</option>
+                    <option value="article">Article</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Slug */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  URL Slug *
+                </label>
+                <input
+                  type="text"
+                  value={editingContent.slug}
+                  onChange={(e) => setEditingContent({...editingContent, slug: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="url-slug"
+                />
+              </div>
+
+              {/* Excerpt */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Excerpt *
+                </label>
+                <textarea
+                  value={editingContent.excerpt}
+                  onChange={(e) => setEditingContent({...editingContent, excerpt: e.target.value})}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Brief description of the content"
+                />
+              </div>
+
+              {/* Content */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Content *
+                </label>
+                <div className="border border-gray-300 rounded-md overflow-hidden">
+                  {/* Simple Toolbar */}
+                  <div className="bg-gray-50 border-b border-gray-300 p-2 flex space-x-2">
+                    <button className="p-2 hover:bg-gray-200 rounded" title="Bold">
+                      <Bold className="h-4 w-4" />
+                    </button>
+                    <button className="p-2 hover:bg-gray-200 rounded" title="Italic">
+                      <Italic className="h-4 w-4" />
+                    </button>
+                    <button className="p-2 hover:bg-gray-200 rounded" title="List">
+                      <List className="h-4 w-4" />
+                    </button>
+                    <button className="p-2 hover:bg-gray-200 rounded" title="Link">
+                      <Link className="h-4 w-4" />
+                    </button>
+                    <button className="p-2 hover:bg-gray-200 rounded" title="Image">
+                      <Image className="h-4 w-4" />
+                    </button>
+                  </div>
+                  <textarea
+                    value={editingContent.content}
+                    onChange={(e) => setEditingContent({...editingContent, content: e.target.value})}
+                    rows={12}
+                    className="w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Write your content here..."
+                  />
+                </div>
+              </div>
+
+              {/* Status */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Status
+                </label>
+                <select
+                  value={editingContent.status}
+                  onChange={(e) => setEditingContent({...editingContent, status: e.target.value as 'draft' | 'published' | 'archived'})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="flex justify-end space-x-3 mt-8">
+              <button
+                onClick={() => {
+                  setShowEditModal(false)
+                  setEditingContent(null)
+                }}
+                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  const updatedContent = {
+                    ...editingContent,
+                    updated_at: new Date().toISOString(),
+                    published_at: editingContent.status === 'published' && !editingContent.published_at 
+                      ? new Date().toISOString() 
+                      : editingContent.published_at
+                  }
+                  updateContent(updatedContent)
+                }}
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
+              >
+                <Save className="w-4 h-4 mr-2 inline" />
+                Update Content
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
