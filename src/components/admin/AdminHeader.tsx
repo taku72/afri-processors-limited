@@ -12,9 +12,10 @@ interface AdminHeaderProps {
   }
   isSidebarMinimized: boolean
   onToggleSidebar: () => void
+  onToggleNotifications: () => void
 }
 
-export default function AdminHeader({ user, isSidebarMinimized, onToggleSidebar }: AdminHeaderProps) {
+export default function AdminHeader({ user, isSidebarMinimized, onToggleSidebar, onToggleNotifications }: AdminHeaderProps) {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -68,7 +69,11 @@ export default function AdminHeader({ user, isSidebarMinimized, onToggleSidebar 
         {/* Right Section - Notifications, Profile, and Logout */}
         <div className="flex items-center space-x-4 ml-4">
           {/* Notification Icon */}
-          <button className="relative p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-colors" title="Notifications">
+          <button 
+            onClick={onToggleNotifications}
+            className="relative p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-colors" 
+            title="Notifications"
+          >
             <Bell size={20} />
             {/* Notification Badge */}
             <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>

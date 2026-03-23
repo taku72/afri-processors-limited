@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
+import { Bell, X } from 'lucide-react'
 import AdminHeader from '@/components/admin/AdminHeader'
 import AdminSidebar from '@/components/admin/AdminSidebar'
 
@@ -10,6 +11,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname()
   const [user, setUser] = useState<any>(null)
   const [isSidebarMinimized, setIsSidebarMinimized] = useState(false)
+  const [currentPage, setCurrentPage] = useState('dashboard')
+  const [isNotificationDialogOpen, setIsNotificationDialogOpen] = useState(false)
 
   // Skip authentication for login page
   const isLoginPage = pathname === '/admin/login'
@@ -54,12 +57,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         user={user} 
         isMinimized={isSidebarMinimized}
         onToggleMinimize={() => setIsSidebarMinimized(!isSidebarMinimized)}
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
       />
       
       <AdminHeader 
         user={user} 
         isSidebarMinimized={isSidebarMinimized}
         onToggleSidebar={() => setIsSidebarMinimized(!isSidebarMinimized)}
+        onToggleNotifications={() => setIsNotificationDialogOpen(!isNotificationDialogOpen)}
       />
 
       {/* Main Content */}
@@ -68,9 +74,42 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         ${isSidebarMinimized ? 'ml-16' : 'ml-64'}
       `}>
         <div className="p-4 sm:p-6 lg:p-8 pt-20">
-          {children}
+          {React.cloneElement(children as React.ReactElement, { 
+            currentPage, 
+            setCurrentPage,
+            isNotificationDialogOpen,
+            setIsNotificationDialogOpen 
+          })}
         </div>
       </main>
+      
+      {/* Notification Dialog */}
+      {isNotificationDialogOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-25"
+            onClick={() => setIsNotificationDialogOpen(false)}
+          />
+          <div className="relative w-full max-w-md bg-white rounded-lg shadow-xl z-50">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+              <div className="flex items-center space-x-2">
+                <Bell className="text-gray-600" size={20} />
+                <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
+              </div>
+              <button
+                onClick={() => setIsNotificationDialogOpen(false)}
+                className="p-1 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="p-8 text-center">
+              <Bell className="mx-auto text-gray-400 mb-4" size={48} />
+              <p className="text-gray-500">No new notifications</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

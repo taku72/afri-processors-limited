@@ -62,15 +62,15 @@ export default function AdminLogin() {
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center px-4">
       <div className="max-w-md w-full">
         {/* Logo/Brand */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center mb-4">
+        <div className="text-center mb-0">
+          <div className="inline-flex items-center justify-center mb-0">
             <div className="relative">
               <Image 
-                src="/images/logo1.png" 
+                src="/images/logo2.png" 
                 alt="Afri Processors Logo" 
-                width={300} 
+                width={180} 
                 height={100} 
-                className="object-contain rounded-lg"
+                className="object-contain justify-self-center"
                 priority
                 onError={(e) => {
                   // Fallback to Shield icon if image fails to load
@@ -80,16 +80,13 @@ export default function AdminLogin() {
                   if (fallback) fallback.style.display = 'flex';
                 }}
               />
+              
               <div className="hidden items-center justify-center w-16 h-16 bg-green-600 rounded-full">
                 <Shield className="text-white" size={32} />
               </div>
-            </div>
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900">Admin Portal</h1>
-          <p className="text-gray-600 mt-2">Afri Processors Management System</p>
-        </div>
-
         {/* Login Form */}
+        {/* <h1 className="text-2xl font-bold text-gray-900 py-1 top-20">Admin Portal</h1> */}
+        <p className="text-gray-600 mt-2">Login As an Admin</p>
         <div className="bg-white rounded-lg shadow-lg p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
@@ -182,7 +179,13 @@ export default function AdminLogin() {
             ← Back to Website
           </Link>
         </div>
-      </div>
+
+              
+            </div>
+          </div>
+        </div>
+
+              </div>
     </div>
   )
 }

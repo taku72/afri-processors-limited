@@ -20,9 +20,11 @@ interface AdminSidebarProps {
   }
   isMinimized: boolean
   onToggleMinimize: () => void
+  currentPage: string
+  onPageChange: (page: string) => void
 }
 
-export default function AdminSidebar({ user, isMinimized, onToggleMinimize }: AdminSidebarProps) {
+export default function AdminSidebar({ user, isMinimized, onToggleMinimize, currentPage, onPageChange }: AdminSidebarProps) {
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', href: '/admin' },
     { icon: Users, label: 'Users', href: '/admin/users', role: 'super_admin' },
@@ -70,23 +72,32 @@ export default function AdminSidebar({ user, isMinimized, onToggleMinimize }: Ad
 
       <nav className="mt-5 px-2">
         <div className="space-y-1">
-          {filteredMenuItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`
-                group flex items-center px-2 py-2 text-sm font-medium rounded-md 
-                text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-all
-                ${isMinimized ? 'justify-center' : ''}
-              `}
-              title={isMinimized ? item.label : undefined}
-            >
-              <item.icon className={`h-5 w-5 ${isMinimized ? '' : 'mr-3'}`} />
-              {!isMinimized && (
-                <span className="truncate">{item.label}</span>
-              )}
-            </Link>
-          ))}
+          {filteredMenuItems.map((item) => {
+            const pageKey = item.href.replace('/admin/', '') || 'dashboard'
+            const isActive = currentPage === pageKey
+            
+            return (
+              <button
+                key={item.href}
+                onClick={() => onPageChange(pageKey)}
+                className={`
+                  group flex items-center w-full px-2 py-2 text-sm font-medium rounded-md 
+                  transition-all
+                  ${isMinimized ? 'justify-center' : ''}
+                  ${isActive 
+                    ? 'bg-green-50 text-green-700 border-r-2 border-green-600' 
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  }
+                `}
+                title={isMinimized ? item.label : undefined}
+              >
+                <item.icon className={`h-5 w-5 ${isMinimized ? '' : 'mr-3'}`} />
+                {!isMinimized && (
+                  <span className="truncate">{item.label}</span>
+                )}
+              </button>
+            )
+          })}
         </div>
       </nav>
     </aside>
