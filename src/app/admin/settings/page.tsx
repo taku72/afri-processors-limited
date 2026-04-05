@@ -231,25 +231,25 @@ export default function SettingsPage() {
   ]
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-2 sm:px-0">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-          <p className="mt-1 text-sm text-gray-600">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Settings</h1>
+          <p className="mt-1 text-xs sm:text-sm text-gray-600">
             Manage your system settings and preferences
           </p>
         </div>
-        <div className="mt-4 sm:mt-0 flex space-x-3">
+        <div className="mt-3 sm:mt-0 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
           <button
             onClick={handleExportSettings}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+            className="inline-flex items-center justify-center px-3 sm:px-4 py-2 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 w-full sm:w-auto"
           >
-            <Download className="w-4 h-4 mr-2" />
+            <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
             Export
           </button>
-          <label className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer">
-            <Upload className="w-4 h-4 mr-2" />
+          <label className="inline-flex items-center justify-center px-3 sm:px-4 py-2 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer w-full sm:w-auto">
+            <Upload className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
             Import
             <input
               type="file"
@@ -282,77 +282,78 @@ export default function SettingsPage() {
       )}
 
       {/* Settings Tabs */}
-      <div className="bg-white rounded-lg shadow-md">
-        <div className="border-b border-gray-200">
-          <nav className="flex -mb-px">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div className="border-b border-gray-200 overflow-x-auto">
+          <nav className="flex -mb-px min-w-max">
             {tabs.map((tab) => {
               const Icon = tab.icon
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center py-4 px-6 border-b-2 font-medium text-sm ${
+                  className={`flex items-center py-3 sm:py-4 px-3 sm:px-6 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap ${
                     activeTab === tab.id
                       ? 'border-green-500 text-green-600'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
-                  <Icon className="w-4 h-4 mr-2" />
-                  {tab.label}
+                  <Icon className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">{tab.label}</span>
+                  <span className="sm:hidden">{tab.label.slice(0, 1)}</span>
                 </button>
               )
             })}
           </nav>
         </div>
 
-        <div className="p-6">
+        <div className="p-3 sm:p-6">
           {/* General Settings */}
           {activeTab === 'general' && (
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-4">General Settings</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">General Settings</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                       Site Name
                     </label>
                     <input
                       type="text"
                       value={generalSettings.siteName}
                       onChange={(e) => setGeneralSettings({...generalSettings, siteName: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                      className="w-full px-2 sm:px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 text-sm"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                       Contact Email
                     </label>
                     <input
                       type="email"
                       value={generalSettings.contactEmail}
                       onChange={(e) => setGeneralSettings({...generalSettings, contactEmail: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                      className="w-full px-2 sm:px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 text-sm"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                       Contact Phone
                     </label>
                     <input
                       type="tel"
                       value={generalSettings.contactPhone}
                       onChange={(e) => setGeneralSettings({...generalSettings, contactPhone: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                      className="w-full px-2 sm:px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 text-sm"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                       Currency
                     </label>
                     <select
                       value={generalSettings.currency}
                       onChange={(e) => setGeneralSettings({...generalSettings, currency: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                      className="w-full px-2 sm:px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 text-sm"
                     >
                       <option value="UGX">UGX - Ugandan Shilling</option>
                       <option value="USD">USD - US Dollar</option>
@@ -361,13 +362,13 @@ export default function SettingsPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                       Timezone
                     </label>
                     <select
                       value={generalSettings.timezone}
                       onChange={(e) => setGeneralSettings({...generalSettings, timezone: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                      className="w-full px-2 sm:px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 text-sm"
                     >
                       <option value="Africa/Kampala">Africa/Kampala</option>
                       <option value="Africa/Nairobi">Africa/Nairobi</option>
@@ -376,13 +377,13 @@ export default function SettingsPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                       Language
                     </label>
                     <select
                       value={generalSettings.language}
                       onChange={(e) => setGeneralSettings({...generalSettings, language: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                      className="w-full px-2 sm:px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 text-sm"
                     >
                       <option value="en">English</option>
                       <option value="fr">French</option>
@@ -391,35 +392,35 @@ export default function SettingsPage() {
                     </select>
                   </div>
                 </div>
-                <div className="mt-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                <div className="mt-4 sm:mt-6">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                     Site Description
                   </label>
                   <textarea
                     value={generalSettings.siteDescription}
                     onChange={(e) => setGeneralSettings({...generalSettings, siteDescription: e.target.value})}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                    className="w-full px-2 sm:px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 text-sm"
                   />
                 </div>
-                <div className="mt-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                <div className="mt-4 sm:mt-6">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                     Address
                   </label>
                   <textarea
                     value={generalSettings.address}
                     onChange={(e) => setGeneralSettings({...generalSettings, address: e.target.value})}
                     rows={2}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                    className="w-full px-2 sm:px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 text-sm"
                   />
                 </div>
               </div>
               <div className="flex justify-end">
                 <button
                   onClick={() => handleSaveSettings('general')}
-                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
+                  className="inline-flex items-center px-3 sm:px-4 py-2 border border-transparent rounded-md shadow-sm text-xs sm:text-sm font-medium text-white bg-green-600 hover:bg-green-700"
                 >
-                  <Save className="w-4 h-4 mr-2" />
+                  <Save className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   Save General Settings
                 </button>
               </div>

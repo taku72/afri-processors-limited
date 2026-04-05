@@ -11,7 +11,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname()
   const [user, setUser] = useState<any>(null)
   const [isSidebarMinimized, setIsSidebarMinimized] = useState(false)
-  const [currentPage, setCurrentPage] = useState('dashboard')
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isNotificationDialogOpen, setIsNotificationDialogOpen] = useState(false)
 
   // Skip authentication for login page
@@ -57,8 +57,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         user={user} 
         isMinimized={isSidebarMinimized}
         onToggleMinimize={() => setIsSidebarMinimized(!isSidebarMinimized)}
-        currentPage={currentPage}
-        onPageChange={setCurrentPage}
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
       />
       
       <AdminHeader 
@@ -66,20 +66,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         isSidebarMinimized={isSidebarMinimized}
         onToggleSidebar={() => setIsSidebarMinimized(!isSidebarMinimized)}
         onToggleNotifications={() => setIsNotificationDialogOpen(!isNotificationDialogOpen)}
+        onToggleMobileMenu={() => setIsSidebarOpen(!isSidebarOpen)}
       />
 
       {/* Main Content */}
       <main className={`
         transition-all duration-300 ease-in-out
-        ${isSidebarMinimized ? 'ml-16' : 'ml-64'}
+        lg:ml-16
+        ${isSidebarMinimized ? 'lg:ml-16' : 'lg:ml-64'}
       `}>
         <div className="p-4 sm:p-6 lg:p-8 pt-20">
-          {React.cloneElement(children as React.ReactElement, { 
-            currentPage, 
-            setCurrentPage,
-            isNotificationDialogOpen,
-            setIsNotificationDialogOpen 
-          })}
+          {children}
         </div>
       </main>
       

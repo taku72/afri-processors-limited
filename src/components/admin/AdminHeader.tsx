@@ -13,9 +13,10 @@ interface AdminHeaderProps {
   isSidebarMinimized: boolean
   onToggleSidebar: () => void
   onToggleNotifications: () => void
+  onToggleMobileMenu: () => void
 }
 
-export default function AdminHeader({ user, isSidebarMinimized, onToggleSidebar, onToggleNotifications }: AdminHeaderProps) {
+export default function AdminHeader({ user, isSidebarMinimized, onToggleSidebar, onToggleNotifications, onToggleMobileMenu }: AdminHeaderProps) {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -30,7 +31,7 @@ export default function AdminHeader({ user, isSidebarMinimized, onToggleSidebar,
     console.log('Searching for:', searchQuery)
   }
 
-  const marginLeft = isSidebarMinimized ? 'ml-16' : 'ml-64'
+  const marginLeft = isSidebarMinimized ? 'lg:ml-16' : 'lg:ml-64'
 
   return (
     <header className={`
@@ -43,7 +44,7 @@ export default function AdminHeader({ user, isSidebarMinimized, onToggleSidebar,
         <div className="flex items-center flex-1">
           {/* Mobile Menu Toggle */}
           <button
-            onClick={onToggleSidebar}
+            onClick={onToggleMobileMenu}
             className="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 mr-4"
           >
             <Menu size={24} />

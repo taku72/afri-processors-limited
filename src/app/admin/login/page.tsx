@@ -25,34 +25,42 @@ export default function AdminLogin() {
     if (error) setError('')
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError('')
 
-    // Simple credential check
-    const validCredentials = [
-      { username: 'admin', password: 'admin123' },
-      { username: 'superadmin', password: 'admin123' }
-    ]
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password
+        })
+      })
 
-    const isValid = validCredentials.some(
-      cred => cred.username === formData.username && cred.password === formData.password
-    )
+      const result = await response.json()
 
-    if (isValid) {
-      // Store simple session data
-      const userData = {
-        username: formData.username,
-        role: formData.username === 'superadmin' ? 'super_admin' : 'admin',
-        full_name: formData.username === 'superadmin' ? 'Super Administrator' : 'Administrator',
-        loginTime: new Date().toISOString()
+      if (response.ok && result.user) {
+        const userData = {
+          id: result.user.id,
+          username: result.user.username,
+          email: result.user.email,
+          role: result.user.role,
+          full_name: result.user.full_name,
+          loginTime: new Date().toISOString()
+        }
+        
+        localStorage.setItem('adminSession', JSON.stringify(userData))
+        router.push('/admin')
+      } else {
+        setError(result.error || 'Invalid username or password')
       }
-      
-      localStorage.setItem('adminSession', JSON.stringify(userData))
-      router.push('/admin')
-    } else {
-      setError('Invalid username or password')
+    } catch (err) {
+      setError('Login failed. Please try again.')
     }
 
     setIsLoading(false)
