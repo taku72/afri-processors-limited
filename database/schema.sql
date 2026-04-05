@@ -130,6 +130,151 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
+-- Get all admin users
+CREATE OR REPLACE FUNCTION get_all_admin_users()
+RETURNS TABLE (
+    id UUID,
+    username TEXT,
+    email TEXT,
+    full_name TEXT,
+    role TEXT,
+    is_active BOOLEAN,
+    last_login TIMESTAMPTZ,
+    created_at TIMESTAMPTZ
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        u.id,
+        u.username::TEXT,
+        u.email::TEXT,
+        u.full_name::TEXT,
+        u.role::TEXT,
+        u.is_active::BOOLEAN,
+        u.last_login,
+        u.created_at
+    FROM admin_users u
+    ORDER BY u.created_at DESC;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Create new admin user
+CREATE OR REPLACE FUNCTION create_admin_user(
+    username_param TEXT,
+    email_param TEXT,
+    password_param TEXT,
+    full_name_param TEXT,
+    role_param TEXT DEFAULT 'admin'
+)
+RETURNS TABLE (
+    id UUID,
+    username TEXT,
+    email TEXT,
+    full_name TEXT,
+    role TEXT,
+    is_active BOOLEAN
+) AS $$
+DECLARE
+    new_user_id UUID;
+BEGIN
+    -- Check if username already exists
+    IF EXISTS (SELECT 1 FROM admin_users WHERE username = username_param) THEN
+        RAISE EXCEPTION 'Username already exists';
+    END IF;
+    
+    -- Check if email already exists
+    IF EXISTS (SELECT 1 FROM admin_users WHERE email = email_param) THEN
+        RAISE EXCEPTION 'Email already exists';
+    END IF;
+    
+    -- Insert new user
+    INSERT INTO admin_users (username, email, password_hash, full_name, role)
+    VALUES (
+        username_param,
+        email_param,
+        crypt(password_param, gen_salt('bf')),
+        full_name_param,
+        role_param
+    )
+    RETURNING id INTO new_user_id;
+    
+    -- Return the created user
+    RETURN QUERY
+    SELECT 
+        u.id,
+        u.username::TEXT,
+        u.email::TEXT,
+        u.full_name::TEXT,
+        u.role::TEXT,
+        u.is_active::BOOLEAN
+    FROM admin_users u
+    WHERE u.id = new_user_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Update admin user
+CREATE OR REPLACE FUNCTION update_admin_user(
+    user_id_param UUID,
+    username_param TEXT DEFAULT NULL,
+    email_param TEXT DEFAULT NULL,
+    full_name_param TEXT DEFAULT NULL,
+    role_param TEXT DEFAULT NULL,
+    is_active_param BOOLEAN DEFAULT NULL
+)
+RETURNS TABLE (
+    id UUID,
+    username TEXT,
+    email TEXT,
+    full_name TEXT,
+    role TEXT,
+    is_active BOOLEAN
+) AS $$
+BEGIN
+    -- Check if user exists
+    IF NOT EXISTS (SELECT 1 FROM admin_users WHERE id = user_id_param) THEN
+        RAISE EXCEPTION 'User not found';
+    END IF;
+    
+    -- Update user if parameters are provided
+    UPDATE admin_users
+    SET 
+        username = COALESCE(username_param, username),
+        email = COALESCE(email_param, email),
+        full_name = COALESCE(full_name_param, full_name),
+        role = COALESCE(role_param, role),
+        is_active = COALESCE(is_active_param, is_active)
+    WHERE id = user_id_param;
+    
+    -- Return updated user
+    RETURN QUERY
+    SELECT 
+        u.id,
+        u.username::TEXT,
+        u.email::TEXT,
+        u.full_name::TEXT,
+        u.role::TEXT,
+        u.is_active::BOOLEAN
+    FROM admin_users u
+    WHERE u.id = user_id_param;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Delete admin user
+CREATE OR REPLACE FUNCTION delete_admin_user(user_id_param UUID)
+RETURNS BOOLEAN AS $$
+BEGIN
+    -- Check if user exists
+    IF NOT EXISTS (SELECT 1 FROM admin_users WHERE id = user_id_param) THEN
+        RAISE EXCEPTION 'User not found';
+    END IF;
+    
+    -- Delete user
+    DELETE FROM admin_users WHERE id = user_id_param;
+    
+    RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
 -- Function to update updated_at timestamp
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
