@@ -134,7 +134,7 @@ const DashboardContent = ({ stats, user }: { stats: DashboardStats, user: any })
     ]
 
     return (
-      <div className="space-y-3 sm:space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Header */}
         <div className="px-2 sm:px-0">
           <h1 className="text-lg sm:text-2xl font-bold text-gray-900">Dashboard Overview</h1>
