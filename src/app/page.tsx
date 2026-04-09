@@ -1,8 +1,71 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { ArrowRight, CheckCircle, Users, Award, Truck, Globe } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+
+// Animated Counter Component
+function AnimatedCounter({ end, duration = 2000, suffix = '' }: { end: number, duration?: number, suffix?: string }) {
+  const [count, setCount] = useState(0)
+  const [isVisible, setIsVisible] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+        }
+      },
+      { threshold: 0.3 }
+    )
+
+    if (ref.current) {
+      observer.observe(ref.current)
+    }
+
+    return () => {
+      if (ref.current) {
+        observer.unobserve(ref.current)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!isVisible) return
+
+    let startTime: number
+    let animationFrameId: number
+
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp
+      const progress = Math.min((timestamp - startTime) / duration, 1)
+      
+      setCount(Math.floor(progress * end))
+      
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(animate)
+      }
+    }
+
+    animationFrameId = requestAnimationFrame(animate)
+
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId)
+      }
+    }
+  }, [isVisible, end, duration])
+
+  return (
+    <div ref={ref} className="text-4xl md:text-5xl font-bold text-primary-700 mb-2">
+      {count}{suffix}
+    </div>
+  )
+}
 
 export default function Home() {
   return (
@@ -26,12 +89,15 @@ export default function Home() {
       
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-36">
           <div className="relative text-center z-10">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Nourishing the Nation
-            </h1>
-            <p className="text-xl md:text-2xl mb-8 text-white opacity-90">
-              Afri Processors Limited's Journey of Excellence Since 1990
-            </p>
+            <div className="mb-8">
+              <h1 className="text-4xl md:text-6xl font-bold mb-4">
+                Nourishing the Nation
+              </h1>
+              <p className="text-xl md:text-2xl mb-6 text-white opacity-90">
+                Afri Processors Limited's Journey of Excellence Since 1990
+              </p>
+            </div>
+            
             <div className="space-x-4">
               <Link 
                 href="/catalog" 
@@ -56,19 +122,19 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
-              <div className="text-4xl md:text-5xl font-bold text-primary-700 mb-2">35+</div>
+              <AnimatedCounter end={35} suffix="+" duration={2500} />
               <div className="text-gray-600 font-medium">Years Experience</div>
             </div>
             <div>
-              <div className="text-4xl md:text-5xl font-bold text-primary-700 mb-2">250+</div>
+              <AnimatedCounter end={250} suffix="+" duration={2200} />
               <div className="text-gray-600 font-medium">Retail Outlets</div>
             </div>
             <div>
-              <div className="text-4xl md:text-5xl font-bold text-primary-700 mb-2">15</div>
+              <AnimatedCounter end={15} duration={2000} />
               <div className="text-gray-600 font-medium">Branch Offices</div>
             </div>
             <div>
-              <div className="text-4xl md:text-5xl font-bold text-primary-700 mb-2">50+</div>
+              <AnimatedCounter end={50} suffix="+" duration={1800} />
               <div className="text-gray-600 font-medium">Product Lines</div>
             </div>
           </div>
