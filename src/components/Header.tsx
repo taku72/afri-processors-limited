@@ -9,7 +9,7 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
-    <header className="bg-white shadow-lg border-b border-gray-100 sticky top-0 z-50">
+    <header className="bg-gray-100 shadow-lg border-b border-gray-100 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo - Using actual image */}
@@ -25,14 +25,7 @@ export default function Header() {
                   priority
                 />
               </div>
-              {/* <div className="ml-3">
-                <h1 className="text-2xl font-bold text-green-700 leading-tight">
-                  Afri Processors
-                </h1>
-                <p className="text-xs text-gray-600 leading-tight">
-                  Quality Agricultural Processing
-                </p>
-              </div> */}
+              
             </div>
           </Link>
 
