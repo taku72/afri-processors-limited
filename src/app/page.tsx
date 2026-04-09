@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { ArrowRight, CheckCircle, Users, Award, Truck, Globe } from 'lucide-react'
@@ -9,13 +10,26 @@ export default function Home() {
       <Header />
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary-600 to-primary-800 text-white bg-agri-primary">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="text-center">
+      <section className="relative text-white">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <Image
+            src="/images/hero.jpg"
+            alt="Agricultural processing background"
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+      
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-36">
+          <div className="relative text-center z-10">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
               Nourishing the Nation
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-primary-100">
+            <p className="text-xl md:text-2xl mb-8 text-white opacity-90">
               Afri Processors Limited's Journey of Excellence Since 1990
             </p>
             <div className="space-x-4">
