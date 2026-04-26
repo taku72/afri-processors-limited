@@ -26,11 +26,8 @@ interface Product {
 // Fetch products from database
 const fetchProducts = async () => {
   try {
-    console.log('Catalog: Making API call to /api/catalog-products...')
-    const response = await fetch('/api/catalog-products')
-    console.log('Catalog: API response status:', response.status)
+    const response = await fetch('/api/products')
     const data = await response.json()
-    console.log('Catalog: API response data:', data)
     return data.products || []
   } catch (error) {
     console.error('Catalog: Error fetching products:', error)
@@ -48,9 +45,7 @@ export default function ProductCatalog() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    console.log('Catalog: Starting to fetch products...')
     fetchProducts().then(data => {
-      console.log('Catalog: Products fetched:', data)
       setProducts(data)
       setIsLoading(false)
     }).catch(error => {
@@ -60,8 +55,6 @@ export default function ProductCatalog() {
   }, [])
 
   useEffect(() => {
-    console.log('Catalog: Filtering products...', { products, searchTerm, selectedCategory, sortBy })
-    
     // Filter products based on search and category
     let filtered = products.filter(product => {
       const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -69,8 +62,6 @@ export default function ProductCatalog() {
       const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory
       return matchesSearch && matchesCategory
     })
-
-    console.log('Catalog: Filtered products:', filtered)
 
     // Sort products
     filtered.sort((a, b) => {
@@ -81,7 +72,6 @@ export default function ProductCatalog() {
       return 0
     })
 
-    console.log('Catalog: Setting filtered products:', filtered)
     setFilteredProducts(filtered)
   }, [searchTerm, selectedCategory, sortBy, products])
 
@@ -180,11 +170,6 @@ export default function ProductCatalog() {
             </div>
           ) : (
             <div>
-              <div className="text-center py-4 bg-blue-100 rounded mb-4">
-                <p className="text-sm text-blue-800">
-                  Debug: isLoading={isLoading}, filteredProducts.length={filteredProducts.length}, products.length={products.length}
-                </p>
-              </div>
               {filteredProducts.length === 0 ? (
                 <div className="text-center py-12">
                   <Package size={64} className="mx-auto text-gray-400 mb-4" />

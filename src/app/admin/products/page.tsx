@@ -300,10 +300,57 @@ export default function ProductsPage() {
     }
   }
 
-  const updateProduct = (updatedProduct: Product) => {
-    setProducts(products.map(p => p.id === updatedProduct.id ? updatedProduct : p))
-    setShowEditModal(false)
-    setEditingProduct(null)
+  const handleUpdateProduct = async () => {
+    if (!editingProduct) return
+
+    try {
+      const response = await fetch(`/api/admin/products-compatibility?id=${editingProduct.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: editingProduct.name,
+          description: editingProduct.description,
+          price: editingProduct.price,
+          sku: editingProduct.sku,
+          stock_quantity: editingProduct.stock
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update product')
+      }
+
+      // Refresh the products list
+      const fetchProducts = async () => {
+        try {
+          const response = await fetch('/api/admin/products-compatibility')
+          if (!response.ok) throw new Error('Failed to fetch products')
+          
+          const apiData = await response.json()
+          const normalizedProducts = (apiData.data?.products || []).map((product: any) => ({
+            ...product,
+            stock: product.stock_quantity || 0,
+            image: product.featured_image_url || '/images/placeholder-product.jpg',
+            specifications: product.specifications || {},
+            features: Array.isArray(product.features) ? product.features : []
+          }))
+          
+          setProducts(normalizedProducts)
+        } catch (error) {
+          console.error('Error refreshing products:', error)
+        }
+      }
+
+      await fetchProducts()
+
+      setShowEditModal(false)
+      setEditingProduct(null)
+    } catch (error) {
+      console.error('Error updating product:', error)
+      alert('Failed to update product')
+    }
   }
 
   const toggleProductStatus = (product: Product) => {
@@ -316,7 +363,9 @@ export default function ProductsPage() {
       updatedProduct.status = 'active'
     }
     updatedProduct.updated_at = new Date().toISOString()
-    updateProduct(updatedProduct)
+    // Note: This function only updates local state for status toggle
+    // For actual database updates, use handleUpdateProduct
+    setProducts(products.map(p => p.id === updatedProduct.id ? updatedProduct : p))
     setShowActionMenu(null)
   }
 
@@ -884,6 +933,135 @@ export default function ProductsPage() {
               >
                 <Save className="w-4 h-4 mr-2 inline" />
                 Add Product
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Product Modal */}
+      {showEditModal && editingProduct && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-10 mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-medium text-gray-900">Edit Product</h3>
+              <button
+                onClick={() => {
+                  setShowEditModal(false)
+                  setEditingProduct(null)
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+
+            {/* Edit Form */}
+            <div className="space-y-6">
+              {/* Basic Information */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Product Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={editingProduct.name}
+                    onChange={(e) => setEditingProduct({...editingProduct, name: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Enter product name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Category *
+                  </label>
+                  <select
+                    value={editingProduct.category || ''}
+                    onChange={(e) => setEditingProduct({...editingProduct, category: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  >
+                    <option value="">Select category</option>
+                    <option value="Flours">Flours</option>
+                    <option value="Oils">Oils</option>
+                    <option value="Seeds">Seeds</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* SKU and Price */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    SKU *
+                  </label>
+                  <input
+                    type="text"
+                    value={editingProduct.sku}
+                    onChange={(e) => setEditingProduct({...editingProduct, sku: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Enter SKU"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Price *
+                  </label>
+                  <input
+                    type="number"
+                    value={editingProduct.price}
+                    onChange={(e) => setEditingProduct({...editingProduct, price: parseFloat(e.target.value)})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Enter price"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Stock Quantity *
+                  </label>
+                  <input
+                    type="number"
+                    value={editingProduct.stock}
+                    onChange={(e) => setEditingProduct({...editingProduct, stock: parseInt(e.target.value)})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Enter stock quantity"
+                  />
+                </div>
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description *
+                </label>
+                <textarea
+                  value={editingProduct.description}
+                  onChange={(e) => setEditingProduct({...editingProduct, description: e.target.value})}
+                  rows={4}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Describe your product..."
+                />
+              </div>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="flex justify-end space-x-3 mt-8">
+              <button
+                onClick={() => {
+                  setShowEditModal(false)
+                  setEditingProduct(null)
+                }}
+                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleUpdateProduct}
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
+              >
+                <Save className="w-4 h-4 mr-2 inline" />
+                Update Product
               </button>
             </div>
           </div>

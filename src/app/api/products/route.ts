@@ -12,6 +12,7 @@ export async function GET(request: NextRequest) {
     const { data: products, error } = await supabase
       .from('products')
       .select('*')
+      .order('created_at', { ascending: false })
       .limit(10)
 
     if (error) {
@@ -20,7 +21,6 @@ export async function GET(request: NextRequest) {
     }
 
     console.log('Public API - Products found:', products?.length || 0)
-    console.log('Public API - Raw products data:', products)
 
     // Normalize products for public display
     const normalizedProducts = (products || []).map((product: any) => ({

@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ data: { product: data } }, { status: 201 })
   } catch (error) {
     console.error('API error:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: (error as Error).message }, { status: 500 })
   }
 }
 
@@ -115,7 +115,7 @@ export async function PUT(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
     const body = await request.json()
-    const { name, description, price, category, sku, stock_quantity, specifications, features } = body
+    const { name, description, price, sku, stock_quantity } = body
 
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 })
@@ -123,16 +123,14 @@ export async function PUT(request: NextRequest) {
 
     const updateData: any = {
       name,
-      slug: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
       description,
       price: parseFloat(price),
-      category,
       sku,
-      stock_quantity: parseInt(stock_quantity) || 0,
-      specifications: specifications ? JSON.stringify(specifications) : null,
-      features: features ? JSON.stringify(features) : null,
-      updated_at: new Date().toISOString()
+      stock_quantity: parseInt(stock_quantity) || 0
     }
+
+    // Note: category_id is removed because it expects UUID, not string
+    // Category updates would require a separate categories table
 
     const { data, error } = await supabase
       .from('products')
@@ -143,13 +141,13 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('Database error:', error)
-      return NextResponse.json({ error: 'Failed to update product' }, { status: 500 })
+      return NextResponse.json({ error: (error as Error).message }, { status: 500 })
     }
 
     return NextResponse.json({ data: { product: data } }, { status: 200 })
   } catch (error) {
     console.error('API error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: (error as Error).message }, { status: 500 })
   }
 }
 
@@ -175,6 +173,6 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ success: true }, { status: 200 })
   } catch (error) {
     console.error('API error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: (error as Error).message }, { status: 500 })
   }
 }
