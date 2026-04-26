@@ -74,74 +74,22 @@ export default function MessagesPage() {
       return
     }
 
-    // Mock messages data
-    const mockMessages: Message[] = [
-      {
-        id: 1,
-        name: 'John Smith',
-        email: 'john.smith@email.com',
-        phone: '+256 784 123 456',
-        subject: 'Inquiry about bulk moringa flour orders',
-        message: 'Hello, I am interested in placing bulk orders for moringa flour for my health food store in Kampala. We would need approximately 500kg per month. Could you please provide pricing information and delivery options? Also, do you offer organic certification documentation?\n\nLooking forward to your response.\n\nBest regards,\nJohn Smith',
-        status: 'unread',
-        priority: 'high',
-        created_at: '2024-01-20T09:30:00Z',
-        updated_at: '2024-01-20T09:30:00Z'
-      },
-      {
-        id: 2,
-        name: 'Sarah Johnson',
-        email: 'sarah.j@wellnessco.com',
-        phone: '+256 752 987 654',
-        subject: 'Partnership opportunity - Wellness products',
-        message: 'Dear Afri Processors Team,\n\nI am the procurement manager at Wellness Co., a growing health products company. We are very impressed with your baobab flour products and would like to discuss potential partnership opportunities.\n\nCould we schedule a call to discuss:\n1. Wholesale pricing structures\n2. Custom packaging options\n3. Exclusive distribution rights for certain regions\n\nOur company is looking to expand our product line with authentic African superfoods.\n\nThank you for your time.\n\nSarah Johnson\nProcurement Manager\nWellness Co.',
-        status: 'read',
-        priority: 'medium',
-        created_at: '2024-01-19T14:15:00Z',
-        updated_at: '2024-01-20T08:00:00Z'
-      },
-      {
-        id: 3,
-        name: 'Michael Ochieng',
-        email: 'michael.o@agritech.org',
-        subject: 'Technical question about castor oil processing',
-        message: 'Hi,\n\nI am researching castor oil processing methods for a small-scale agricultural project in western Kenya. I found your company online and was impressed with your operations.\n\nCould you provide information about:\n- Cold pressing vs traditional methods\n- Equipment requirements for small-scale production\n- Training opportunities\n\nI am particularly interested in learning about sustainable processing techniques.\n\nThanks,\nMichael',
-        status: 'replied',
-        priority: 'low',
-        created_at: '2024-01-18T11:45:00Z',
-        updated_at: '2024-01-19T10:30:00Z',
-        replied_at: '2024-01-19T10:30:00Z',
-        notes: 'Sent technical documentation and training information. Follow up scheduled for next week.'
-      },
-      {
-        id: 4,
-        name: 'Emma Davis',
-        email: 'emma@exportltd.co.uk',
-        phone: '+44 20 7123 4567',
-        subject: 'URGENT: Export documentation needed',
-        message: 'URGENT INQUIRY\n\nWe have an urgent shipment that requires proper export documentation by end of week. Our client needs:\n- Certificate of Origin\n- Phytosanitary Certificate\n- Organic Certification (if applicable)\n- Quality Analysis Report\n\nProducts: Moringa flour and Baobab flour\nQuantity: 2 containers\nDestination: Hamburg, Germany\n\nThis is time-sensitive. Please respond immediately with availability and pricing for expedited documentation.\n\nEmma Davis\nExport Manager\nGlobal Trade Ltd',
-        status: 'unread',
-        priority: 'urgent',
-        created_at: '2024-01-20T16:20:00Z',
-        updated_at: '2024-01-20T16:20:00Z'
-      },
-      {
-        id: 5,
-        name: 'David Kimani',
-        email: 'david.kimani@gmail.com',
-        subject: 'Feedback on your products',
-        message: 'Hello,\n\nI just wanted to say that your moringa flour is excellent! I\'ve been using it for my family for the past 3 months and we\'ve noticed significant health improvements. The quality is consistent and the packaging is professional.\n\nDo you have a retail location in Nairobi where I can purchase directly? Also, are you planning to introduce any new products soon?\n\nKeep up the great work!\n\nDavid Kimani',
-        status: 'archived',
-        priority: 'low',
-        created_at: '2024-01-15T13:10:00Z',
-        updated_at: '2024-01-18T09:00:00Z',
-        archived_at: '2024-01-18T09:00:00Z',
-        notes: 'Positive feedback - customer satisfied. Provided information about Nairobi distributors.'
+    // Fetch messages from database
+    const fetchMessages = async () => {
+      try {
+        const response = await fetch('/api/admin/messages')
+        const data = await response.json()
+        return data.messages || []
+      } catch (error) {
+        console.error('Error fetching messages:', error)
+        return []
       }
-    ]
+    }
 
-    setMessages(mockMessages)
-    setIsLoading(false)
+    fetchMessages().then(messages => {
+      setMessages(messages)
+      setIsLoading(false)
+    })
   }, [router])
 
   const handleMarkAsRead = (message: Message) => {

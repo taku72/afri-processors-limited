@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status') || 'all'
 
     let query = supabase
-      .from('messages')
+      .from('contact_messages')
       .select('*')
       .order('created_at', { ascending: false })
 
