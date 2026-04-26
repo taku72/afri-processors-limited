@@ -15,11 +15,11 @@ import {
 } from 'lucide-react'
 
 // Import page components
-import UsersPage from '@/components/admin/UsersPage'
-import ContentPage from '@/components/admin/ContentPage'
-import ProductsPage from '@/components/admin/ProductsPage'
-import NewsPage from '@/components/admin/NewsPage'
-import MessagesPage from '@/components/admin/MessagesPage'
+import UsersPage from '../../components/admin/UsersPage'
+import ContentPage from '../../components/admin/ContentPage'
+import ProductsPage from '../../components/admin/ProductsPage'
+import NewsPage from '../../components/admin/NewsPage'
+import MessagesPage from '../../components/admin/MessagesPage'
 
 // Type definitions
 interface StatCard {

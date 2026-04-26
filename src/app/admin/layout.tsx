@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import NotificationContext from '@/contexts/NotificationContext'
 import { useRouter, usePathname } from 'next/navigation'
 import { Bell, X } from 'lucide-react'
 import AdminHeader from '@/components/admin/AdminHeader'

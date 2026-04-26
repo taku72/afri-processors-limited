@@ -97,71 +97,52 @@ export default function NewsPage() {
       return
     }
     
-    let userData
+    let userData: any
     try {
       userData = JSON.parse(sessionData)
       setUser(userData)
+      // Set author to current user's name
+      setNewNews(prev => ({ ...prev, author: userData.full_name || userData.username }))
     } catch {
       router.push('/admin/login')
       return
     }
 
-    // Mock news data
-    const mockNews: News[] = [
-      {
-        id: 1,
-        title: 'Afri Processors Limited Expands Operations in East Africa',
-        slug: 'afri-processors-expands-east-africa',
-        content: 'Afri Processors Limited is proud to announce our expansion into the East African market. This strategic move will allow us to better serve our customers in Kenya, Uganda, Tanzania, and Rwanda. Our new processing facility in Nairobi will create over 200 jobs and increase our production capacity by 40%. The expansion includes state-of-the-art equipment for moringa and baobab processing, ensuring we maintain our commitment to quality and sustainability.',
-        excerpt: 'Major expansion announcement as Afri Processors enters East African markets with new facility and job creation.',
-        author: userData.full_name,
-        category: 'Company News',
-        tags: ['expansion', 'east africa', 'growth', 'jobs'],
-        status: 'published',
-        featured: true,
-        image_url: '/images/expansion-news.jpg',
-        published_at: '2024-01-15T00:00:00Z',
-        created_at: '2024-01-15T00:00:00Z',
-        updated_at: '2024-01-15T00:00:00Z',
-        read_time: 3
-      },
-      {
-        id: 2,
-        title: 'New Organic Moringa Products Launch This Month',
-        slug: 'new-organic-moringa-products-launch',
-        content: 'We are excited to introduce our new line of organic moringa products, including moringa capsules, moringa tea, and moringa energy bars. All products are certified organic and sourced from local Ugandan farmers. Our moringa is processed using advanced techniques to preserve maximum nutritional value. The launch event will take place at our headquarters on January 25th, with samples available for distributors and retailers.',
-        excerpt: 'Introducing new organic moringa product line with capsules, tea, and energy bars from certified organic farms.',
-        author: userData.full_name,
-        category: 'Product Launch',
-        tags: ['moringa', 'organic', 'new products', 'launch'],
-        status: 'published',
-        featured: false,
-        image_url: '/images/moringa-products.jpg',
-        published_at: '2024-01-10T00:00:00Z',
-        created_at: '2024-01-10T00:00:00Z',
-        updated_at: '2024-01-10T00:00:00Z',
-        read_time: 2
-      },
-      {
-        id: 3,
-        title: 'Sustainability Report: Our Environmental Impact for 2023',
-        slug: 'sustainability-report-2023',
-        content: 'Our 2023 sustainability report shows significant improvements in our environmental footprint. We reduced water usage by 30%, implemented solar power at our main facility, and achieved zero waste certification. Our partnership with local farmers has helped promote sustainable agricultural practices across the region. We are committed to continuing our environmental stewardship and setting new goals for 2024.',
-        excerpt: 'Annual sustainability report highlights major achievements in environmental conservation and sustainable practices.',
-        author: userData.full_name,
-        category: 'Sustainability',
-        tags: ['sustainability', 'environment', 'green', 'report'],
-        status: 'draft',
-        featured: false,
-        image_url: '/images/sustainability-report.jpg',
-        created_at: '2024-01-20T00:00:00Z',
-        updated_at: '2024-01-20T00:00:00Z',
-        read_time: 5
+    // Fetch real news data from API
+    const fetchNews = async () => {
+      try {
+        const response = await fetch('/api/admin/news-compatibility')
+        if (!response.ok) throw new Error('Failed to fetch news')
+        
+        const data = await response.json()
+        console.log('API Response:', data)
+        console.log('Articles from API:', data.data?.articles)
+        
+        // Normalize the data to match the expected News interface
+        const normalizedNews = (data.data?.articles || []).map((article: any) => ({
+          ...article,
+          author: article.author || userData.full_name,
+          category: article.category || 'General',
+          tags: Array.isArray(article.tags) 
+            ? article.tags 
+            : (article.tags && typeof article.tags === 'string' 
+                ? article.tags.split(',').map((t: string) => t.trim()).filter(Boolean) 
+                : []),
+          image_url: article.image_url || '/api/placeholder/800/400',
+          featured: article.featured || false
+        }))
+        
+        console.log('Setting news to:', normalizedNews)
+        setNews(normalizedNews)
+      } catch (error) {
+        console.error('Error fetching news:', error)
+        setNews([])
+      } finally {
+        setIsLoading(false)
       }
-    ]
+    }
 
-    setNews(mockNews)
-    setIsLoading(false)
+    fetchNews()
   }, [router])
 
   const generateSlug = (title: string) => {
@@ -208,42 +189,80 @@ export default function NewsPage() {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleAddNews = () => {
+  const handleAddNews = async () => {
     if (!validateForm()) return
 
-    const newsToAdd: News = {
-      id: news.length + 1,
-      title: newNews.title,
-      slug: newNews.slug,
-      content: newNews.content,
-      excerpt: newNews.excerpt,
-      author: newNews.author,
-      category: newNews.category,
-      tags: newNews.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
-      status: newNews.status,
-      featured: newNews.featured,
-      image_url: newNews.image_url || undefined,
-      published_at: newNews.status === 'published' ? new Date().toISOString() : undefined,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      read_time: calculateReadTime(newNews.content)
-    }
+    try {
+      const response = await fetch('/api/admin/news-compatibility', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          title: newNews.title,
+          slug: newNews.slug,
+          content: newNews.content,
+          excerpt: newNews.excerpt,
+          author: newNews.author,
+          status: newNews.status,
+          image_url: newNews.image_url
+        })
+      })
 
-    setNews([...news, newsToAdd])
-    setNewNews({
-      title: '',
-      slug: '',
-      content: '',
-      excerpt: '',
-      author: user?.full_name || '',
-      category: '',
-      tags: '',
-      status: 'draft',
-      featured: false,
-      image_url: ''
-    })
-    setErrors({})
-    setShowAddModal(false)
+      if (!response.ok) {
+        throw new Error('Failed to create article')
+      }
+
+      const data = await response.json()
+      console.log('Created article:', data)
+
+      // Refresh the news list
+      const fetchNews = async () => {
+        try {
+          const response = await fetch('/api/admin/news-compatibility')
+          if (!response.ok) throw new Error('Failed to fetch news')
+          
+          const apiData = await response.json()
+          const normalizedNews = (apiData.data?.articles || []).map((article: any) => ({
+            ...article,
+            author: article.author || user?.full_name,
+            category: article.category || 'General',
+            tags: Array.isArray(article.tags) 
+              ? article.tags 
+              : (article.tags && typeof article.tags === 'string' 
+                  ? article.tags.split(',').map((t: string) => t.trim()).filter(Boolean) 
+                  : []),
+            image_url: article.image_url || '/api/placeholder/800/400',
+            featured: article.featured || false
+          }))
+          
+          setNews(normalizedNews)
+        } catch (error) {
+          console.error('Error refreshing news:', error)
+        }
+      }
+
+      await fetchNews()
+
+      setNewNews({
+        title: '',
+        slug: '',
+        content: '',
+        excerpt: '',
+        author: user?.full_name || '',
+        category: '',
+        tags: '',
+        status: 'draft',
+        featured: false,
+        image_url: ''
+      })
+      setErrors({})
+      setShowAddModal(false)
+
+    } catch (error) {
+      console.error('Error creating article:', error)
+      alert('Failed to create article')
+    }
   }
 
   const handleEditNews = (newsItem: News) => {
@@ -258,11 +277,49 @@ export default function NewsPage() {
     setShowActionMenu(null)
   }
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (newsToDelete) {
-      setNews(news.filter(n => n.id !== newsToDelete.id))
-      setShowDeleteModal(false)
-      setNewsToDelete(null)
+      try {
+        const response = await fetch(`/api/admin/news-compatibility?id=${newsToDelete.id}`, {
+          method: 'DELETE'
+        })
+
+        if (!response.ok) {
+          throw new Error('Failed to delete article')
+        }
+
+        // Refresh the news list
+        const fetchNews = async () => {
+          try {
+            const response = await fetch('/api/admin/news-compatibility')
+            if (!response.ok) throw new Error('Failed to fetch news')
+            
+            const apiData = await response.json()
+            const normalizedNews = (apiData.data?.articles || []).map((article: any) => ({
+              ...article,
+              author: article.author || user?.full_name,
+              tags: Array.isArray(article.tags) 
+                ? article.tags 
+                : (article.tags && typeof article.tags === 'string' 
+                    ? article.tags.split(',').map((t: string) => t.trim()).filter(Boolean) 
+                    : []),
+              image_url: article.image_url || '/api/placeholder/800/400'
+            }))
+            
+            setNews(normalizedNews)
+          } catch (error) {
+            console.error('Error refreshing news:', error)
+          }
+        }
+
+        await fetchNews()
+
+        setShowDeleteModal(false)
+        setNewsToDelete(null)
+      } catch (error) {
+        console.error('Error deleting article:', error)
+        alert('Failed to delete article')
+      }
     }
   }
 
@@ -272,7 +329,7 @@ export default function NewsPage() {
     setEditingNews(null)
   }
 
-  const toggleNewsStatus = (newsItem: News) => {
+  const toggleNewsStatus = async (newsItem: News) => {
     const updatedNews = { ...newsItem }
     if (newsItem.status === 'draft') {
       updatedNews.status = 'published'
@@ -283,8 +340,60 @@ export default function NewsPage() {
       updatedNews.status = 'draft'
     }
     updatedNews.updated_at = new Date().toISOString()
-    updateNews(updatedNews)
-    setShowActionMenu(null)
+
+    try {
+      const response = await fetch(`/api/admin/news-compatibility?id=${newsItem.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          title: updatedNews.title,
+          slug: updatedNews.slug,
+          content: updatedNews.content,
+          excerpt: updatedNews.excerpt,
+          author: updatedNews.author,
+          status: updatedNews.status,
+          image_url: updatedNews.image_url
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update article')
+      }
+
+      // Refresh the news list
+      const fetchNews = async () => {
+        try {
+          const response = await fetch('/api/admin/news-compatibility')
+          if (!response.ok) throw new Error('Failed to fetch news')
+          
+          const apiData = await response.json()
+          const normalizedNews = (apiData.data?.articles || []).map((article: any) => ({
+            ...article,
+            author: article.author || user?.full_name,
+            category: article.category || 'General',
+            tags: Array.isArray(article.tags) 
+              ? article.tags 
+              : (article.tags && typeof article.tags === 'string' 
+                  ? article.tags.split(',').map((t: string) => t.trim()).filter(Boolean) 
+                  : []),
+            image_url: article.image_url || '/api/placeholder/800/400',
+            featured: article.featured || false
+          }))
+          
+          setNews(normalizedNews)
+        } catch (error) {
+          console.error('Error refreshing news:', error)
+        }
+      }
+
+      await fetchNews()
+      setShowActionMenu(null)
+    } catch (error) {
+      console.error('Error updating article:', error)
+      alert('Failed to update article')
+    }
   }
 
   const toggleFeatured = (newsItem: News) => {
@@ -436,23 +545,33 @@ export default function NewsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">News Management</h1>
-          <p className="mt-1 text-sm text-gray-600">
-            Manage company news, announcements, and press releases
-          </p>
+      <div className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-gray-900">News Management</h1>
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Create Article
+            </button>
+          </div>
         </div>
-        <div className="mt-4 sm:mt-0">
-          <button 
-            onClick={() => setShowAddModal(true)}
-            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add News
-          </button>
+      </div>
+
+      {/* Debug Info */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+        <div className="bg-yellow-100 border border-yellow-300 rounded p-2 text-xs">
+          <strong>Debug:</strong> News items: {news.length}, Filtered: {filteredNews.length}
+          {news.length > 0 && (
+            <>
+              <br />
+              First item published_at: {news[0]?.published_at || 'null'}
+            </>
+          )}
         </div>
       </div>
 
@@ -589,7 +708,9 @@ export default function NewsPage() {
                   </td>
                 </tr>
               ) : (
-                filteredNews.map((newsItem) => (
+                filteredNews.map((newsItem) => {
+                  console.log('Rendering newsItem:', newsItem)
+                  return (
                   <tr key={newsItem.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <div className="flex items-start">
@@ -644,14 +765,17 @@ export default function NewsPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {newsItem.published_at ? (
-                        <div className="flex items-center">
-                          <Calendar className="h-4 w-4 text-gray-400 mr-2" />
-                          {formatDate(newsItem.published_at)}
-                        </div>
-                      ) : (
-                        <span className="text-gray-400">Not published</span>
-                      )}
+                      {(() => {
+                        console.log('Published at:', newsItem.published_at)
+                        return newsItem.published_at ? (
+                          <div className="flex items-center">
+                            <Calendar className="h-4 w-4 text-gray-400 mr-2" />
+                            {formatDate(newsItem.published_at)}
+                          </div>
+                        ) : (
+                          <span className="text-gray-400">Not published</span>
+                        )
+                      })()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end space-x-2 relative">
@@ -714,7 +838,8 @@ export default function NewsPage() {
                       </div>
                     </td>
                   </tr>
-                ))
+                  )
+                })
               )}
             </tbody>
           </table>
