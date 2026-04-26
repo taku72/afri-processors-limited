@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { Phone, Mail, MapPin, Clock, Send, CheckCircle } from 'lucide-react'
@@ -68,7 +69,7 @@ export default function Contact() {
       <Header />
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary-600 to-primary-800 text-white py-16">
+      <section className="bg-gradient-to-r from-primary-600 to-primary-800 text-white pt-16 sm:pt-20 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
             Contact Us
@@ -84,42 +85,56 @@ export default function Contact() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Information */}
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            <div className="relative">
+              {/* Background Image */}
+              <div className="absolute inset-0 rounded-lg overflow-hidden">
+                <Image
+                  src="/images/contact.jpg"
+                  alt="Contact background"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
+              {/* Dark overlay for content readability */}
+              <div className="absolute inset-0 bg-black bg-opacity-50 rounded-lg"></div>
+              
+              <div className="relative z-10 p-8">
+              <h2 className="text-2xl font-bold text-white mb-6">
                 Get in Touch
               </h2>
               
               <div className="space-y-6">
                 <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Phone className="text-primary-600" size={24} />
+                  <div className="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Phone className="text-white" size={24} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">Phone</h3>
-                    <p className="text-gray-600">+234 123 456 7890</p>
-                    <p className="text-gray-600">+234 987 654 3210</p>
+                    <h3 className="font-semibold text-white mb-1">Phone</h3>
+                    <p className="text-white">+234 123 456 7890</p>
+                    <p className="text-white">+234 987 654 3210</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Mail className="text-primary-600" size={24} />
+                  <div className="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Mail className="text-white" size={24} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">Email</h3>
-                    <p className="text-gray-600">info@afriprocessors.com</p>
-                    <p className="text-gray-600">sales@afriprocessors.com</p>
-                    <p className="text-gray-600">support@afriprocessors.com</p>
+                    <h3 className="font-semibold text-white mb-1">Email</h3>
+                    <p className="text-white">info@afriprocessors.com</p>
+                    <p className="text-white">sales@afriprocessors.com</p>
+                    <p className="text-white">support@afriprocessors.com</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <MapPin className="text-primary-600" size={24} />
+                  <div className="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <MapPin className="text-white" size={24} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">Address</h3>
-                    <p className="text-gray-600">
+                    <h3 className="font-semibold text-white mb-1">Address</h3>
+                    <p className="text-white">
                       Afri Processors Complex<br />
                       Industrial Estate, Ikeja<br />
                       Lagos, Nigeria<br />
@@ -153,6 +168,7 @@ export default function Contact() {
                     <p className="text-sm">Lagos, Nigeria</p>
                   </div>
                 </div>
+              </div>
               </div>
             </div>
 

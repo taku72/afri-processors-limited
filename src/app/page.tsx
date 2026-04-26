@@ -72,7 +72,9 @@ export default function Home() {
     <div className="min-h-screen">
       <Header />
       
-      {/* Hero Section */}
+      {/* Main Content with padding for fixed header */}
+      <div className="pt-16 sm:pt-20">
+        {/* Hero Section */}
       <section className="relative text-white">
         {/* Background Image */}
         <div className="absolute inset-0">
@@ -87,28 +89,28 @@ export default function Home() {
         {/* Dark overlay for text readability */}
         <div className="absolute inset-0 bg-black bg-opacity-40"></div>
       
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-36">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 md:py-24 lg:py-36">
           <div className="relative text-center z-10">
-            <div className="mb-8">
-              <h1 className="text-4xl md:text-6xl font-bold mb-4">
+            <div className="mb-6 sm:mb-8">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold mb-3 sm:mb-4">
                 Nourishing the Nation
               </h1>
-              <p className="text-xl md:text-2xl mb-6 text-white opacity-90">
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl mb-4 sm:mb-6 text-white opacity-90 max-w-3xl mx-auto">
                 Afri Processors Limited's Journey of Excellence Since 1990
               </p>
             </div>
             
-            <div className="space-x-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
               <Link 
                 href="/catalog" 
-                className="inline-flex items-center bg-white text-primary-700 px-8 py-3 rounded-lg font-semibold hover:bg-primary-50 transition-colors"
+                className="inline-flex items-center justify-center bg-white text-primary-700 px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-semibold hover:bg-primary-50 transition-colors"
               >
                 Explore Products
-                <ArrowRight className="ml-2" size={20} />
+                <ArrowRight className="ml-2" size={16} />
               </Link>
               <Link 
                 href="/contact" 
-                className="inline-flex items-center border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-primary-700 transition-colors"
+                className="inline-flex items-center justify-center border-2 border-white text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-semibold hover:bg-white hover:text-primary-700 transition-colors"
               >
                 Contact Us
               </Link>
@@ -118,68 +120,76 @@ export default function Home() {
       </section>
 
       {/* Statistics Section */}
-      <section className="py-16 bg-white">
+      <section className="py-8 sm:py-12 md:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 text-center">
             <div>
-              <AnimatedCounter end={35} suffix="+" duration={2500} />
-              <div className="text-gray-600 font-medium">Years Experience</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary-600">
+                <AnimatedCounter end={35} suffix="+" duration={2500} />
+              </div>
+              <div className="text-sm sm:text-base text-gray-600 font-medium">Years Experience</div>
             </div>
             <div>
-              <AnimatedCounter end={250} suffix="+" duration={2200} />
-              <div className="text-gray-600 font-medium">Retail Outlets</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary-600">
+                <AnimatedCounter end={250} suffix="+" duration={2200} />
+              </div>
+              <div className="text-sm sm:text-base text-gray-600 font-medium">Retail Outlets</div>
             </div>
             <div>
-              <AnimatedCounter end={15} duration={2000} />
-              <div className="text-gray-600 font-medium">Branch Offices</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary-600">
+                <AnimatedCounter end={15} duration={2000} />
+              </div>
+              <div className="text-sm sm:text-base text-gray-600 font-medium">Branch Offices</div>
             </div>
             <div>
-              <AnimatedCounter end={50} suffix="+" duration={1800} />
-              <div className="text-gray-600 font-medium">Product Lines</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary-600">
+                <AnimatedCounter end={50} suffix="+" duration={1800} />
+              </div>
+              <div className="text-sm sm:text-base text-gray-600 font-medium">Product Lines</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-12 sm:py-16 md:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-8 sm:mb-12 md:mb-16">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
               Why Choose Afri Processors?
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto">
               We deliver excellence in agricultural processing
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Award className="text-primary-600" size={32} />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+            <div className="text-center p-4 sm:p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Award className="text-primary-600" size={24} />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Quality Assurance</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg sm:text-xl font-semibold mb-2">Quality Assurance</h3>
+              <p className="text-sm sm:text-base text-gray-600">
                 International standards and quality control at every step of processing
               </p>
             </div>
             
-            <div className="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Truck className="text-primary-600" size={32} />
+            <div className="text-center p-4 sm:p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Truck className="text-primary-600" size={24} />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Reliable Delivery</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg sm:text-xl font-semibold mb-2">Reliable Delivery</h3>
+              <p className="text-sm sm:text-base text-gray-600">
                 Timely and efficient delivery across Nigeria and beyond
               </p>
             </div>
             
-            <div className="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Globe className="text-primary-600" size={32} />
+            <div className="text-center p-4 sm:p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Globe className="text-primary-600" size={24} />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Sustainable Practices</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg sm:text-xl font-semibold mb-2">Sustainable Practices</h3>
+              <p className="text-sm sm:text-base text-gray-600">
                 Environmentally friendly processing methods for a better future
               </p>
             </div>
@@ -361,6 +371,7 @@ export default function Home() {
       </section>
 
       <Footer />
+      </div>
     </div>
   )
 }
