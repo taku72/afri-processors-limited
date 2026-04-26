@@ -778,7 +778,6 @@ export default function ProductsPage() {
                     <option value="Flours">Flours</option>
                     <option value="Oils">Oils</option>
                     <option value="Seeds">Seeds</option>
-                    <option value="Other">Other</option>
                   </select>
                   {errors.category && (
                     <p className="mt-1 text-sm text-red-600">{errors.category}</p>
@@ -971,22 +970,6 @@ export default function ProductsPage() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     placeholder="Enter product name"
                   />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Category *
-                  </label>
-                  <select
-                    value={editingProduct.category || ''}
-                    onChange={(e) => setEditingProduct({...editingProduct, category: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    <option value="">Select category</option>
-                    <option value="Flours">Flours</option>
-                    <option value="Oils">Oils</option>
-                    <option value="Seeds">Seeds</option>
-                    <option value="Other">Other</option>
-                  </select>
                 </div>
               </div>
 

@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     console.log('Received body:', body)
-    const { name, description, price, category, sku, stock_quantity } = body
+    const { name, description, price, sku, stock_quantity } = body
 
     if (!name || !description || !price || !sku) {
       return NextResponse.json({ error: 'Name, description, price, and SKU are required' }, { status: 400 })
@@ -83,11 +83,6 @@ export async function POST(request: NextRequest) {
       price: parseFloat(price),
       sku,
       stock_quantity: parseInt(stock_quantity) || 0
-    }
-
-    // Only add category_id if category is provided
-    if (category && category !== 'all') {
-      insertData.category_id = category
     }
 
     console.log('Insert data:', insertData)

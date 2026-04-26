@@ -8,12 +8,11 @@ const supabase = createClient(
 
 export async function GET(request: NextRequest) {
   try {
-    // Use exact same query as working admin API
+    // Use same query structure as admin API but without filters
     const { data: products, error } = await supabase
       .from('products')
       .select('*')
       .order('created_at', { ascending: false })
-      .limit(10)
 
     if (error) {
       console.error('Database error:', error)
