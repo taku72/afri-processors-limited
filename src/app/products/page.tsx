@@ -27,69 +27,25 @@ export default function ProductsPage() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Mock products data - in production, this would come from an API
-    const mockProducts: Product[] = [
-      {
-        id: 1,
-        name: 'Moringa Flour',
-        description: 'Premium quality moringa flour, rich in vitamins and minerals. Perfect for health-conscious consumers looking for natural superfoods.',
-        price: 15000,
-        category: 'Flours',
-        image: '/images/moringa-flour.jpg',
-        sku: 'MF001',
-        stock: 150,
-        featured: true,
-        rating: 4.8,
-        reviews: 124,
-        created_at: '2024-01-15T10:00:00Z'
-      },
-      {
-        id: 2,
-        name: 'Baobab Flour',
-        description: 'Nutrient-dense baobab flour packed with vitamin C and fiber. Ideal for smoothies, baking, and traditional African recipes.',
-        price: 18000,
-        category: 'Flours',
-        image: '/images/baobab-flour.jpg',
-        sku: 'BF001',
-        stock: 85,
-        featured: true,
-        rating: 4.7,
-        reviews: 89,
-        created_at: '2024-01-15T10:30:00Z'
-      },
-      {
-        id: 3,
-        name: 'Castor Oil',
-        description: 'Pure, cold-pressed castor oil for cosmetic and industrial use. Excellent for hair care, skin care, and various applications.',
-        price: 25000,
-        category: 'Oils',
-        image: '/images/castor-oil.jpg',
-        sku: 'CO001',
-        stock: 60,
-        featured: false,
-        rating: 4.6,
-        reviews: 67,
-        created_at: '2024-01-15T11:00:00Z'
-      },
-      {
-        id: 4,
-        name: 'Moringa Seeds',
-        description: 'High-quality moringa seeds for planting and consumption. Rich in antioxidants and essential nutrients for optimal health.',
-        price: 8000,
-        category: 'Seeds',
-        image: '/images/moringa-seeds.jpg',
-        sku: 'MS001',
-        stock: 200,
-        featured: false,
-        rating: 4.5,
-        reviews: 45,
-        created_at: '2024-01-15T11:30:00Z'
-      }
-    ]
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true)
+        const response = await fetch('/api/products')
+        if (!response.ok) throw new Error('Failed to fetch products')
 
-    setProducts(mockProducts)
-    setFilteredProducts(mockProducts)
-    setIsLoading(false)
+        const data = await response.json()
+        setProducts(data.products || [])
+        setFilteredProducts(data.products || [])
+      } catch (error) {
+        console.error('Error fetching products:', error)
+        setProducts([])
+        setFilteredProducts([])
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchProducts()
   }, [])
 
   useEffect(() => {

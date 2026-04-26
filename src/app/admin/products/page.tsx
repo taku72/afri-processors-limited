@@ -94,96 +94,35 @@ export default function ProductsPage() {
       return
     }
 
-    // Mock products data
-    const mockProducts: Product[] = [
-      {
-        id: 1,
-        name: 'Moringa Flour',
-        description: 'Nutrient-rich moringa flour made from dried moringa leaves, perfect for healthy cooking and baking',
-        price: 35.99,
-        category: 'Flours',
-        sku: 'MF-001',
-        stock: 120,
-        status: 'active',
-        image: '/images/moringa-flour.jpg',
-        features: ['Rich in vitamins and minerals', 'High protein content', '100% organic', 'Gluten-free'],
-        specifications: {
-          'Weight': '2kg',
-          'Protein': '25%',
-          'Vitamin C': '200mg per 100g',
-          'Shelf Life': '12 months',
-          'Origin': 'Uganda farms'
-        },
-        created_at: '2024-01-01T00:00:00Z',
-        updated_at: '2024-01-15T00:00:00Z'
-      },
-      {
-        id: 2,
-        name: 'Baobab Flour',
-        description: 'Premium baobab fruit powder with tangy flavor, excellent for smoothies and traditional recipes',
-        price: 42.50,
-        category: 'Flours',
-        sku: 'BF-002',
-        stock: 85,
-        status: 'active',
-        image: '/images/baobab-flour.jpg',
-        features: ['High in vitamin C', 'Natural prebiotics', 'Rich in antioxidants', 'Raw and unprocessed'],
-        specifications: {
-          'Weight': '1kg',
-          'Vitamin C': '300mg per 100g',
-          'Fiber': '50%',
-          'Shelf Life': '18 months',
-          'Origin': 'West Africa'
-        },
-        created_at: '2024-01-05T00:00:00Z',
-        updated_at: '2024-01-20T00:00:00Z'
-      },
-      {
-        id: 3,
-        name: 'Castor Oil',
-        description: 'Pure cold-pressed castor oil, ideal for medicinal, cosmetic, and industrial applications',
-        price: 28.75,
-        category: 'Oils',
-        sku: 'CO-003',
-        stock: 0,
-        status: 'out_of_stock',
-        image: '/images/castor-oil.jpg',
-        features: ['Cold-pressed', '100% pure', 'Rich in ricinoleic acid', 'Versatile use'],
-        specifications: {
-          'Volume': '500ml',
-          'Purity': '99.9%',
-          'Ricinoleic Acid': '90%',
-          'Shelf Life': '24 months',
-          'Processing': 'Cold-pressed'
-        },
-        created_at: '2024-02-01T00:00:00Z',
-        updated_at: '2024-02-01T00:00:00Z'
-      },
-      {
-        id: 4,
-        name: 'Moringa Seeds',
-        description: 'High-quality moringa oleifera seeds for planting, oil extraction, or nutritional supplements',
-        price: 15.99,
-        category: 'Seeds',
-        sku: 'MS-004',
-        stock: 200,
-        status: 'active',
-        image: '/images/moringa-seeds.jpg',
-        features: ['Premium grade seeds', 'High germination rate', 'Rich in oil content', 'Organic grown'],
-        specifications: {
-          'Weight': '500g',
-          'Germination Rate': '85%',
-          'Oil Content': '35-40%',
-          'Purity': '98%',
-          'Shelf Life': '6 months'
-        },
-        created_at: '2024-02-10T00:00:00Z',
-        updated_at: '2024-02-15T00:00:00Z'
+    // Fetch real products data from API
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/admin/products-compatibility')
+        if (!response.ok) throw new Error('Failed to fetch products')
+        
+        const data = await response.json()
+        console.log('API Response:', data)
+        
+        // Normalize the data to match the expected Product interface
+        const normalizedProducts = (data.data?.products || []).map((product: any) => ({
+          ...product,
+          stock: product.stock_quantity || 0,
+          image: product.featured_image_url || '/images/placeholder-product.jpg',
+          specifications: product.specifications || {},
+          features: Array.isArray(product.features) ? product.features : []
+        }))
+        
+        console.log('Setting products to:', normalizedProducts)
+        setProducts(normalizedProducts)
+      } catch (error) {
+        console.error('Error fetching products:', error)
+        setProducts([])
+      } finally {
+        setIsLoading(false)
       }
-    ]
+    }
 
-    setProducts(mockProducts)
-    setIsLoading(false)
+    fetchProducts()
   }, [router])
 
   const generateSKU = (name: string, category: string) => {
@@ -235,38 +174,75 @@ export default function ProductsPage() {
     return specs
   }
 
-  const handleAddProduct = () => {
+  const handleAddProduct = async () => {
     if (!validateForm()) return
 
-    const productToAdd: Product = {
-      id: products.length + 1,
-      name: newProduct.name,
-      description: newProduct.description,
-      price: parseFloat(newProduct.price),
-      category: newProduct.category,
-      sku: newProduct.sku,
-      stock: parseInt(newProduct.stock),
-      status: parseInt(newProduct.stock) === 0 ? 'out_of_stock' : newProduct.status as 'active' | 'inactive',
-      features: newProduct.features.split('\n').filter(f => f.trim()),
-      specifications: parseSpecifications(newProduct.specifications),
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }
+    try {
+      const response = await fetch('/api/admin/products-compatibility', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: newProduct.name,
+          description: newProduct.description,
+          price: parseFloat(newProduct.price),
+          category: newProduct.category,
+          sku: newProduct.sku,
+          stock_quantity: parseInt(newProduct.stock),
+          specifications: parseSpecifications(newProduct.specifications),
+          features: newProduct.features.split('\n').filter(f => f.trim())
+        })
+      })
 
-    setProducts([...products, productToAdd])
-    setNewProduct({
-      name: '',
-      description: '',
-      price: '',
-      category: '',
-      sku: '',
-      stock: '',
-      status: 'active',
-      features: '',
-      specifications: ''
-    })
-    setErrors({})
-    setShowAddModal(false)
+      if (!response.ok) {
+        throw new Error('Failed to create product')
+      }
+
+      const data = await response.json()
+      console.log('Created product:', data)
+
+      // Refresh the products list
+      const fetchProducts = async () => {
+        try {
+          const response = await fetch('/api/admin/products-compatibility')
+          if (!response.ok) throw new Error('Failed to fetch products')
+          
+          const apiData = await response.json()
+          const normalizedProducts = (apiData.data?.products || []).map((product: any) => ({
+            ...product,
+            stock: product.stock_quantity || 0,
+            image: product.featured_image_url || '/images/placeholder-product.jpg',
+            specifications: product.specifications || {},
+            features: Array.isArray(product.features) ? product.features : []
+          }))
+          
+          setProducts(normalizedProducts)
+        } catch (error) {
+          console.error('Error refreshing products:', error)
+        }
+      }
+
+      await fetchProducts()
+
+      setNewProduct({
+        name: '',
+        description: '',
+        price: '',
+        category: '',
+        sku: '',
+        stock: '',
+        status: 'active',
+        features: '',
+        specifications: ''
+      })
+      setErrors({})
+      setShowAddModal(false)
+
+    } catch (error) {
+      console.error('Error creating product:', error)
+      alert('Failed to create product')
+    }
   }
 
   const handleEditProduct = (product: Product) => {
@@ -281,11 +257,46 @@ export default function ProductsPage() {
     setShowActionMenu(null)
   }
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (productToDelete) {
-      setProducts(products.filter(p => p.id !== productToDelete.id))
-      setShowDeleteModal(false)
-      setProductToDelete(null)
+      try {
+        const response = await fetch(`/api/admin/products-compatibility?id=${productToDelete.id}`, {
+          method: 'DELETE'
+        })
+
+        if (!response.ok) {
+          throw new Error('Failed to delete product')
+        }
+
+        // Refresh the products list
+        const fetchProducts = async () => {
+          try {
+            const response = await fetch('/api/admin/products-compatibility')
+            if (!response.ok) throw new Error('Failed to fetch products')
+            
+            const apiData = await response.json()
+            const normalizedProducts = (apiData.data?.products || []).map((product: any) => ({
+              ...product,
+              stock: product.stock_quantity || 0,
+              image: product.featured_image_url || '/images/placeholder-product.jpg',
+              specifications: product.specifications || {},
+              features: Array.isArray(product.features) ? product.features : []
+            }))
+            
+            setProducts(normalizedProducts)
+          } catch (error) {
+            console.error('Error refreshing products:', error)
+          }
+        }
+
+        await fetchProducts()
+
+        setShowDeleteModal(false)
+        setProductToDelete(null)
+      } catch (error) {
+        console.error('Error deleting product:', error)
+        alert('Failed to delete product')
+      }
     }
   }
 

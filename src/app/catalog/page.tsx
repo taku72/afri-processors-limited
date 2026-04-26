@@ -5,70 +5,72 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { Search, Filter, Grid, List, ChevronDown, Star, Package, Truck, Shield } from 'lucide-react'
 
-// Sample product data
-const sampleProducts = [
-  {
-    id: 1,
-    name: 'Premium Maize Seeds',
-    category: 'Seeds',
-    subcategory: 'Grains',
-    price: 45.99,
-    unit: 'kg',
-    minOrder: 25,
-    inStock: true,
-    rating: 4.5,
-    reviews: 128,
-    description: 'High-quality maize seeds suitable for commercial farming',
-    specifications: 'Germination rate: 95%, Purity: 99%',
-    features: ['Drought resistant', 'High yield', 'Disease resistant']
-  },
-  {
-    id: 2,
-    name: 'Organic Beans',
-    category: 'Legumes',
-    subcategory: 'Beans',
-    price: 32.50,
-    unit: 'kg',
-    minOrder: 50,
-    inStock: true,
-    rating: 4.2,
-    reviews: 89,
-    description: 'Certified organic beans for healthy consumption',
-    specifications: 'Protein: 22%, Moisture: 14%',
-    features: ['Non-GMO', 'Organic certified', 'Rich in protein']
-  },
-  {
-    id: 3,
-    name: 'Groundnut Oil',
-    category: 'Processed Foods',
-    subcategory: 'Oils',
-    price: 12.75,
-    unit: 'liter',
-    minOrder: 10,
-    inStock: true,
-    rating: 4.8,
-    reviews: 203,
-    description: 'Pure groundnut oil extracted from premium quality nuts',
-    specifications: 'Purity: 99.5%, FFA: < 1%',
-    features: ['Cold pressed', 'No additives', 'Rich flavor']
+// Product interface
+interface Product {
+  id: string
+  name: string
+  description: string
+  price: number
+  category: string
+  sku: string
+  stock: number
+  image: string
+  rating: number
+  reviews: number
+  created_at: string
+  unit?: string
+  features?: string[]
+  specifications?: string | Record<string, any>
+}
+
+// Fetch products from database
+const fetchProducts = async () => {
+  try {
+    console.log('Catalog: Making API call to /api/catalog-products...')
+    const response = await fetch('/api/catalog-products')
+    console.log('Catalog: API response status:', response.status)
+    const data = await response.json()
+    console.log('Catalog: API response data:', data)
+    return data.products || []
+  } catch (error) {
+    console.error('Catalog: Error fetching products:', error)
+    return []
   }
-]
+}
 
 export default function ProductCatalog() {
-  const [filteredProducts, setFilteredProducts] = useState(sampleProducts)
+  const [products, setProducts] = useState<Product[]>([])
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [sortBy, setSortBy] = useState('name')
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    console.log('Catalog: Starting to fetch products...')
+    fetchProducts().then(data => {
+      console.log('Catalog: Products fetched:', data)
+      setProducts(data)
+      setIsLoading(false)
+    }).catch(error => {
+      console.error('Catalog: Error fetching products:', error)
+      setIsLoading(false)
+    })
+  }, [])
+
+  useEffect(() => {
+    console.log('Catalog: Filtering products...', { products, searchTerm, selectedCategory, sortBy })
+    
     // Filter products based on search and category
-    let filtered = sampleProducts.filter(product => {
+    let filtered = products.filter(product => {
       const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           product.description.toLowerCase().includes(searchTerm.toLowerCase())
       const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory
       return matchesSearch && matchesCategory
     })
+
+    console.log('Catalog: Filtered products:', filtered)
 
     // Sort products
     filtered.sort((a, b) => {
@@ -79,8 +81,9 @@ export default function ProductCatalog() {
       return 0
     })
 
+    console.log('Catalog: Setting filtered products:', filtered)
     setFilteredProducts(filtered)
-  }, [searchTerm, selectedCategory, sortBy])
+  }, [searchTerm, selectedCategory, sortBy, products])
 
   const categories = ['all', 'Seeds', 'Legumes', 'Processed Foods']
 
@@ -170,16 +173,28 @@ export default function ProductCatalog() {
           </div>
 
           {/* Products Display */}
-          {filteredProducts.length === 0 ? (
+          {isLoading ? (
             <div className="text-center py-12">
-              <Package size={64} className="mx-auto text-gray-400 mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No products found</h3>
-              <p className="text-gray-600">Try adjusting your search or filter criteria</p>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Loading products...</h3>
             </div>
           ) : (
-            <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
-              {filteredProducts.map(product => (
-                <div key={product.id} className={viewMode === 'grid' ? 'bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6' : 'bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 flex items-center space-x-4'}>
+            <div>
+              <div className="text-center py-4 bg-blue-100 rounded mb-4">
+                <p className="text-sm text-blue-800">
+                  Debug: isLoading={isLoading}, filteredProducts.length={filteredProducts.length}, products.length={products.length}
+                </p>
+              </div>
+              {filteredProducts.length === 0 ? (
+                <div className="text-center py-12">
+                  <Package size={64} className="mx-auto text-gray-400 mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No products found</h3>
+                  <p className="text-gray-600">Try adjusting your search or filter criteria</p>
+                </div>
+              ) : (
+                <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
+                  {filteredProducts.map(product => (
+                    <div key={product.id} className={viewMode === 'grid' ? 'bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6' : 'bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 flex items-center space-x-4'}>
                   {viewMode === 'grid' ? (
                     <>
                       {/* Product Image */}
@@ -194,7 +209,7 @@ export default function ProductCatalog() {
                         
                         <div className="flex items-center justify-between">
                           <span className="text-2xl font-bold text-green-700">${product.price}</span>
-                          <span className="text-sm text-gray-500">/{product.unit}</span>
+                          <span className="text-sm text-gray-500">/{product.unit || 'unit'}</span>
                         </div>
 
                         {/* Rating */}
@@ -213,7 +228,7 @@ export default function ProductCatalog() {
 
                         {/* Features */}
                         <div className="space-y-1">
-                          {product.features.slice(0, 2).map((feature, index) => (
+                          {product.features?.slice(0, 2).map((feature: any, index: any) => (
                             <div key={index} className="flex items-center space-x-2">
                               <Shield size={16} className="text-green-600" />
                               <span className="text-sm text-gray-700">{feature}</span>
@@ -234,7 +249,7 @@ export default function ProductCatalog() {
                           <h3 className="text-lg font-semibold text-gray-900">{product.name}</h3>
                           <div className="text-right">
                             <span className="text-2xl font-bold text-green-700">${product.price}</span>
-                            <span className="text-sm text-gray-500">/{product.unit}</span>
+                            <span className="text-sm text-gray-500">/{product.unit || 'unit'}</span>
                           </div>
                         </div>
                         
@@ -254,11 +269,11 @@ export default function ProductCatalog() {
                         </div>
 
                         <div className="text-sm text-gray-700">
-                          <strong>Specifications:</strong> {product.specifications}
+                          <strong>Specifications:</strong> {typeof product.specifications === 'string' ? product.specifications : JSON.stringify(product.specifications)}
                         </div>
 
                         <div className="flex flex-wrap gap-2">
-                          {product.features.map((feature, index) => (
+                          {product.features?.map((feature: any, index: any) => (
                             <span key={index} className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
                               {feature}
                             </span>
@@ -269,6 +284,8 @@ export default function ProductCatalog() {
                   )}
                 </div>
               ))}
+                </div>
+              )}
             </div>
           )}
         </div>
