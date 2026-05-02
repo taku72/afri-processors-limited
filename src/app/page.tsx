@@ -223,10 +223,24 @@ export default function Home() {
                 <ArrowRight className="ml-2" size={20} />
               </Link>
             </div>
-            <div className="bg-gray-200 rounded-lg h-96 flex items-center justify-center">
-              <div className="text-center text-gray-500">
-                <Users className="mx-auto mb-4" size={64} />
-                <p>Founder's Image</p>
+            <div className="relative rounded-lg h-96 overflow-hidden bg-gray-200">
+              <Image
+                src="/images/hero.jpg"
+                alt="Chief Adekunle Afolabi - Founder"
+                fill
+                className="object-cover"
+                priority
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                {/* <div className="text-center text-gray-600">
+                  <Users className="mx-auto mb-4" size={64} />
+                  <p className="font-semibold">Chief Adekunle Afolabi</p>
+                  <p className="text-sm">Founder & CEO</p>
+                </div> */}
               </div>
             </div>
           </div>
@@ -273,24 +287,42 @@ export default function Home() {
           
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {[
-              'Premium Flour',
-              'Golden Rice',
-              'Afri Oil',
-              'Maize Meal',
-              'Peanut Butter',
-              'Instant Milk',
-              'Food Supplement',
-              'Bread Spread',
-              'Fruit Juice',
-              'Protein Powder',
-              'Cereal Mix',
-              'Baking Flour'
+              { name: 'Premium Flour', image: 'hero.jpg' },
+              { name: 'Golden Rice', image: 'hero.jpg' },
+              { name: 'Afri Oil', image: 'hero.jpg' },
+              { name: 'Maize Meal', image: 'hero.jpg' },
+              { name: 'Peanut Butter', image: 'hero.jpg' },
+              { name: 'Instant Milk', image: 'hero.jpg' },
+              { name: 'Food Supplement', image: 'hero.jpg' },
+              { name: 'Bread Spread', image: 'hero.jpg' },
+              { name: 'Fruit Juice', image: 'hero.jpg' },
+              { name: 'Protein Powder', image: 'hero.jpg' },
+              { name: 'Cereal Mix', image: 'hero.jpg' },
+              { name: 'Baking Flour', image: 'hero.jpg' }
             ].map((product, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-4">
-                <div className="bg-gray-200 h-32 rounded-lg mb-4 flex items-center justify-center">
-                  <div className="text-gray-400 text-sm text-center">{product}</div>
+              <div key={index} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden">
+                <div className="relative h-32 bg-gray-100">
+                  <Image
+                    src={`/images/products/${product.image}`}
+                    alt={product.name}
+                    fill
+                    className="object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center text-gray-400">
+                      <div className="w-12 h-12 bg-gray-200 rounded-lg mx-auto mb-2 flex items-center justify-center">
+                        <span className="text-xs font-semibold">{product.name.charAt(0)}</span>
+                      </div>
+                      {/* <p className="text-xs">{product.name}</p> */}
+                    </div>
+                  </div>
                 </div>
-                <h3 className="font-semibold text-gray-900 text-center">{product}</h3>
+                <div className="p-4">
+                  <h3 className="font-semibold text-gray-900 text-center">{product.name}</h3>
+                </div>
               </div>
             ))}
           </div>
